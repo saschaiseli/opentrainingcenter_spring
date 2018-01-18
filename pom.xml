@@ -68,6 +68,13 @@
 			<version>2.0.0.RELEASE</version>
 		</dependency>
 
+		<dependency>
+			<groupId>garmin.com</groupId>
+			<artifactId>fit-sdk</artifactId>
+			<version>${version.garmin}</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/src/main/resources/lib/fit_16.60.0.jar</systemPath>
+		</dependency>
 
 
 		<dependency>
