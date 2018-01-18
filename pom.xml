@@ -24,6 +24,7 @@
 		<java.version>1.8</java.version>
 		<vaadin.version>8.2.0</vaadin.version>
 		<postgres.version>9.1-901.jdbc3</postgres.version>
+		<version.garmin>16.60</version.garmin>
 	</properties>
 
 	<dependencies>
