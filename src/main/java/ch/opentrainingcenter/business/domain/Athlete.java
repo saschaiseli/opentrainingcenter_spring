@@ -11,13 +11,10 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Pattern;
@@ -37,8 +34,6 @@ public class Athlete implements Serializable, UserDetails {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name = "ATHLETE_ID_SEQUENCE", sequenceName = "ATHLETE_ID_SEQUENCE")
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ATHLETE_ID_SEQUENCE")
 	private long id;
 
 	@Column(nullable = false)
@@ -70,10 +65,10 @@ public class Athlete implements Serializable, UserDetails {
 	private Set<Training> trainings = new HashSet<>();
 
 	@OneToMany(mappedBy = "athlete", cascade = CascadeType.REMOVE)
-	private Set<Planungwoche> planungwoches = new HashSet<>();
+	private Set<Shoe> shoes = new HashSet<>();
 
 	@OneToMany(mappedBy = "athlete", cascade = CascadeType.REMOVE)
-	private Set<Shoe> shoes = new HashSet<>();
+	private Set<Rule> rules = new HashSet<>();
 
 	public Athlete() {
 	}
@@ -133,14 +128,6 @@ public class Athlete implements Serializable, UserDetails {
 		this.routes = routes;
 	}
 
-	public Set<Planungwoche> getPlanungwoches() {
-		return planungwoches;
-	}
-
-	public void setPlanungwoches(final Set<Planungwoche> planungwoches) {
-		this.planungwoches = planungwoches;
-	}
-
 	public void addTraining(final Training record) {
 		trainings.add(record);
 	}
@@ -168,7 +155,14 @@ public class Athlete implements Serializable, UserDetails {
 
 	public void setTrainings(final Set<Training> trainings) {
 		this.trainings = trainings;
+	}
 
+	public Set<Rule> getRules() {
+		return rules;
+	}
+
+	public void setRules(final Set<Rule> rules) {
+		this.rules = rules;
 	}
 
 	public String getEmail() {
