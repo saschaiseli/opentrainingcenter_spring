@@ -1,6 +1,5 @@
 package ch.opentrainingcenter.business.domain;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -29,7 +28,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 		@NamedQuery(name = "Athlete.findByEmailAndPassword", query = "SELECT a FROM ATHLETE a where a.email=?1 and a.password=?2") })
 
 @Entity(name = "ATHLETE")
-public class Athlete implements Serializable, UserDetails {
+public class Athlete implements UserDetails, EntityObject {
 
 	private static final long serialVersionUID = 1L;
 

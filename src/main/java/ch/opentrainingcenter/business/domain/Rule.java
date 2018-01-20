@@ -6,6 +6,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 /**
  * Regeln & Ziele.
@@ -20,8 +22,10 @@ import javax.persistence.ManyToOne;
  *
  * </pre>
  */
-@Entity
-public class Rule {
+@NamedQueries({ //
+		@NamedQuery(name = "Rule.findByAthlete", query = "SELECT r FROM RULE r where r.athlete=?1") })
+@Entity(name = "RULE")
+public class Rule implements EntityObject {
 
 	@Id
 	private long id;
@@ -29,10 +33,10 @@ public class Rule {
 	private long value;
 
 	@Enumerated(EnumType.ORDINAL)
-	private Section unit;
+	private Section section;
 
 	@Enumerated(EnumType.ORDINAL)
-	private Unit type;
+	private Unit unit;
 
 	@ManyToOne
 	@JoinColumn(name = "ID_FK_ATHLETE", nullable = false)
@@ -54,20 +58,20 @@ public class Rule {
 		this.value = value;
 	}
 
-	public Section getUnit() {
+	public Section getSection() {
+		return section;
+	}
+
+	public void setSection(final Section unit) {
+		this.section = unit;
+	}
+
+	public Unit getUnit() {
 		return unit;
 	}
 
-	public void setUnit(final Section unit) {
-		this.unit = unit;
-	}
-
-	public Unit getType() {
-		return type;
-	}
-
-	public void setType(final Unit type) {
-		this.type = type;
+	public void setUnit(final Unit type) {
+		this.unit = type;
 	}
 
 	public Athlete getAthlete() {

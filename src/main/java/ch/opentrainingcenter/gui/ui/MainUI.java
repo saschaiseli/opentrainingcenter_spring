@@ -13,6 +13,8 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.spring.annotation.SpringViewDisplay;
 import com.vaadin.spring.navigator.SpringNavigator;
+import com.vaadin.ui.AbstractOrderedLayout;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
@@ -29,6 +31,7 @@ import ch.opentrainingcenter.gui.view.ActivityView;
 import ch.opentrainingcenter.gui.view.DashboardView;
 import ch.opentrainingcenter.gui.view.EquipmentView;
 import ch.opentrainingcenter.gui.view.ErrorView;
+import ch.opentrainingcenter.gui.view.RuleView;
 import ch.opentrainingcenter.gui.view.SettingsView;
 
 @Theme(ValoTheme.THEME_NAME)
@@ -40,7 +43,8 @@ public class MainUI extends UI implements ViewDisplay {
 
 	private static final long serialVersionUID = 1L;
 
-	private Panel mainPanel;
+	private Panel contentPanel;
+
 	@Autowired
 	private SpringNavigator springNavigator;
 
@@ -50,13 +54,12 @@ public class MainUI extends UI implements ViewDisplay {
 	@PostConstruct
 	public void init() {
 		springNavigator.setErrorView(ErrorView.class);
-		mainPanel = new Panel();
+		contentPanel = new Panel();
 
 	}
 
 	@Override
 	public void init(final VaadinRequest request) {
-
 		if (SecurityUtils.isAdmin()) {
 			getUI().getNavigator().navigateTo(DashboardView.VIEW_NAME);
 		} else {
@@ -64,35 +67,61 @@ public class MainUI extends UI implements ViewDisplay {
 			getUI().getPage().setLocation("/login");
 		}
 
-		final VerticalLayout root = new VerticalLayout();
-		root.setSizeFull();
+		final VerticalLayout rootLayout = new VerticalLayout();
+		rootLayout.setSizeFull();
 
-		root.addComponent(new Label("My Application"));
+		createHeader(rootLayout);
 
-		final HorizontalLayout menuview = new HorizontalLayout();
-		menuview.setSizeFull();
+		final HorizontalLayout menuAndContentLayout = new HorizontalLayout();
+		menuAndContentLayout.setSizeFull();
 
-		final Panel menuPanel = new Panel();
-		final VerticalLayout menuLayout = new VerticalLayout();
-		menuLayout.setSizeFull();
-		createNavigationButton(menuLayout, DashboardView.VIEW_NAME);
-		createNavigationButton(menuLayout, ActivityView.VIEW_NAME);
-		createNavigationButton(menuLayout, EquipmentView.VIEW_NAME);
-		createNavigationButton(menuLayout, SettingsView.VIEW_NAME);
-		createPopUpButton(menuLayout, "Upload");
+		final Panel leftMenuPanel = new Panel();
+		final VerticalLayout leftMenuLayout = new VerticalLayout();
+		leftMenuLayout.setSizeFull();
+		createNavigationButton(leftMenuLayout, DashboardView.VIEW_NAME);
+		createNavigationButton(leftMenuLayout, ActivityView.VIEW_NAME);
+		createNavigationButton(leftMenuLayout, RuleView.VIEW_NAME);
+		createNavigationButton(leftMenuLayout, EquipmentView.VIEW_NAME);
+		createPopUpButton(leftMenuLayout, "Upload");
 
-		menuPanel.setContent(menuLayout);
-		menuview.addComponent(menuPanel);
-		menuview.addComponent(mainPanel);
+		leftMenuPanel.setContent(leftMenuLayout);
+		menuAndContentLayout.addComponent(leftMenuPanel);
+		menuAndContentLayout.addComponent(contentPanel);
 
-		menuview.setExpandRatio(menuPanel, 0.1f);
-		menuview.setExpandRatio(mainPanel, 0.9f);
-		root.addComponent(menuview);
+		menuAndContentLayout.setExpandRatio(leftMenuPanel, 0.1f);
+		menuAndContentLayout.setExpandRatio(contentPanel, 0.9f);
+		rootLayout.addComponent(menuAndContentLayout);
 
-		root.addComponent(new Label("footer"));
-		root.setExpandRatio(menuview, 1.0f);
-		setContent(root);
+		rootLayout.addComponent(new Label("footer"));
+		rootLayout.setExpandRatio(menuAndContentLayout, 1.0f);
+		setContent(rootLayout);
 
+	}
+
+	private void createHeader(final VerticalLayout root) {
+		final HorizontalLayout headerLayout = new HorizontalLayout();
+		headerLayout.setMargin(false);
+
+		final Panel headerPanel = new Panel();
+
+		final Button settingsButton = createNavigationButton(headerLayout, SettingsView.VIEW_NAME);
+		headerLayout.setComponentAlignment(settingsButton, Alignment.MIDDLE_RIGHT);
+
+		final Button logoutButton = createNavigationUIButton("Logout", "/login");
+		headerLayout.addComponent(logoutButton);
+		headerLayout.setComponentAlignment(logoutButton, Alignment.MIDDLE_RIGHT);
+
+		headerPanel.setContent(headerLayout);
+		root.addComponent(headerLayout);
+
+	}
+
+	private Button createNavigationUIButton(final String caption, final String url) {
+		final Button button = new Button(caption);
+		button.addClickListener(event -> {
+			getUI().getPage().setLocation(url);
+		});
+		return button;
 	}
 
 	private void createPopUpButton(final VerticalLayout layout, final String caption) {
@@ -104,17 +133,18 @@ public class MainUI extends UI implements ViewDisplay {
 		});
 	}
 
-	private void createNavigationButton(final VerticalLayout layout, final String viewName) {
+	private Button createNavigationButton(final AbstractOrderedLayout layout, final String viewName) {
 		final Button button = new Button(viewName);
 		layout.addComponent(button);
 		button.addClickListener(event -> {
 			getUI().getNavigator().navigateTo(viewName);
 		});
+		return button;
 	}
 
 	@Override
 	public void showView(final View view) {
-		mainPanel.setContent((Component) view);
+		contentPanel.setContent((Component) view);
 	}
 
 }
