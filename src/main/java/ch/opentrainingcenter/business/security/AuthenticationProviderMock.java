@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import ch.opentrainingcenter.business.domain.Athlete;
 import ch.opentrainingcenter.business.repositories.AthleteRepository;
 
-@Profile("SECURITY_MOCK")
+@Profile("!prod")
 @Primary
 @Service
 public class AuthenticationProviderMock implements AuthenticationProvider {

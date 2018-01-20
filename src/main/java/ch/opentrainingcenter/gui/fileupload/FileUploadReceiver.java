@@ -16,10 +16,13 @@ import com.vaadin.ui.Upload.SucceededListener;
 import com.vaadin.ui.Window;
 
 import ch.opentrainingcenter.business.service.FileUploadHandlerService;
+import ch.opentrainingcenter.business.service.fileconverter.FileConvertException;
 
 public class FileUploadReceiver implements Receiver, SucceededListener {
 
 	private static final String ERROR = "Fehler beim upload: <br/>";
+
+	private static final String ERROR_CONVERT = "Fehler beim konvertieren: <br/>";
 
 	private static final String SUCCESS = "File %s hochgeladen";
 
@@ -27,9 +30,9 @@ public class FileUploadReceiver implements Receiver, SucceededListener {
 
 	private final FileUploadHandlerService uploadService;
 
-	private File file;
-
 	private final Window window;
+
+	private Path path;
 
 	public FileUploadReceiver(final FileUploadHandlerService uploadService, final Window window) {
 		this.uploadService = uploadService;
@@ -41,7 +44,8 @@ public class FileUploadReceiver implements Receiver, SucceededListener {
 		FileOutputStream fos = null;
 		try {
 			final Path dir = Files.createTempDirectory("opentrainingcenter_");
-			file = new File(dir.toString() + "/" + filename);
+			final File file = new File(dir.toString() + "/" + filename);
+			path = file.toPath();
 			fos = new FileOutputStream(file);
 		} catch (final IOException e) {
 			new Notification(ERROR, e.getMessage(), Type.ERROR_MESSAGE, true).show(Page.getCurrent());
@@ -54,7 +58,12 @@ public class FileUploadReceiver implements Receiver, SucceededListener {
 	public void uploadSucceeded(final SucceededEvent event) {
 		window.close();
 		final String message = String.format(SUCCESS, event.getFilename());
-		uploadService.handleFile(file);
+		try {
+			uploadService.handleFile(path);
+		} catch (final FileConvertException e) {
+			new Notification(ERROR_CONVERT, e.getMessage(), Type.ERROR_MESSAGE, true).show(Page.getCurrent());
+			return;
+		}
 		new Notification(message, Type.HUMANIZED_MESSAGE).show(Page.getCurrent());
 	}
 

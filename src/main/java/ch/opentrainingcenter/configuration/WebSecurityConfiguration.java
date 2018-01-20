@@ -29,7 +29,7 @@ import com.vaadin.spring.annotation.EnableVaadin;
 
 import ch.opentrainingcenter.business.service.AthleteDetailService;
 
-@Profile("!SECURITY_MOCK")
+@Profile("!dev")
 @Configuration
 @EnableVaadin
 @EnableWebSecurity
