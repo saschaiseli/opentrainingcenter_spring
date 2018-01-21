@@ -1,5 +1,7 @@
 package ch.opentrainingcenter.business.security;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
@@ -30,8 +32,13 @@ public class AuthenticationProviderMock implements AuthenticationProvider {
 	}
 
 	private Athlete getUser(final String principal) {
-		final Athlete athlete = athleteRepo.findByEmail(principal.toString());
-		return athlete; // Return our own user class here!
+		final List<Athlete> athletes = athleteRepo.findAll();
+		if (athletes.isEmpty()) {
+			final Athlete tmp = new Athlete("firstName", "lastName", "sascha.iseli@test.ch", "password");
+			tmp.setMaxHeartRate(195);
+			athletes.add(athleteRepo.save(tmp));
+		}
+		return athletes.get(0); // Return our own user class here!
 	}
 
 	@Override

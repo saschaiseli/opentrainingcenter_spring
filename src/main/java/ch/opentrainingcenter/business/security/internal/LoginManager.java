@@ -45,6 +45,7 @@ public class LoginManager implements ILoginManager {
 		authenticationManager.authenticate(token);
 		if (token.isAuthenticated()) {
 			SecurityContextHolder.getContext().setAuthentication(token);
+			// principalHolder.setPrincipal(user);
 		}
 	}
 }

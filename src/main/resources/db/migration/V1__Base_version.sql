@@ -13,7 +13,7 @@
 
 -- Exportiere Struktur von Tabelle otc_db_prod.athlete
 CREATE TABLE IF NOT EXISTS `athlete` (
-  `id` bigint(20) NOT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `birthday` date DEFAULT NULL,
   `email` varchar(255) NOT NULL,
   `first_name` varchar(255) NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `athlete` (
 -- Daten Export vom Benutzer nicht ausgewählt
 -- Exportiere Struktur von Tabelle otc_db_prod.health
 CREATE TABLE IF NOT EXISTS `health` (
-  `id` bigint(20) NOT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `cardio` int(11) DEFAULT NULL,
   `dateofmeasure` date DEFAULT NULL,
   `weight` int(11) DEFAULT NULL,
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `health` (
 -- Daten Export vom Benutzer nicht ausgewählt
 -- Exportiere Struktur von Tabelle otc_db_prod.lap_info
 CREATE TABLE IF NOT EXISTS `lap_info` (
-  `id` bigint(20) NOT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `lap_end` int(11) DEFAULT NULL,
   `geschwindigkeit` varchar(255) DEFAULT NULL,
   `heart_beat` int(11) NOT NULL,
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `lap_info` (
 -- Daten Export vom Benutzer nicht ausgewählt
 -- Exportiere Struktur von Tabelle otc_db_prod.route
 CREATE TABLE IF NOT EXISTS `route` (
-  `id` bigint(20) NOT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `beschreibung` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `id_fk_athlete` bigint(20) NOT NULL,
@@ -73,9 +73,9 @@ CREATE TABLE IF NOT EXISTS `route` (
 -- Daten Export vom Benutzer nicht ausgewählt
 -- Exportiere Struktur von Tabelle otc_db_prod.rule
 CREATE TABLE IF NOT EXISTS `rule` (
-  `id` bigint(20) NOT NULL,
-  `type` int(11) DEFAULT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `unit` int(11) DEFAULT NULL,
+  `section` int(11) DEFAULT NULL,
   `value` bigint(20) NOT NULL,
   `id_fk_athlete` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
@@ -86,7 +86,7 @@ CREATE TABLE IF NOT EXISTS `rule` (
 -- Daten Export vom Benutzer nicht ausgewählt
 -- Exportiere Struktur von Tabelle otc_db_prod.shoes
 CREATE TABLE IF NOT EXISTS `shoes` (
-  `id` bigint(20) NOT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `imageicon` varchar(255) DEFAULT NULL,
   `kaufdatum` datetime DEFAULT NULL,
   `preis` int(11) NOT NULL,
@@ -100,7 +100,7 @@ CREATE TABLE IF NOT EXISTS `shoes` (
 -- Daten Export vom Benutzer nicht ausgewählt
 -- Exportiere Struktur von Tabelle otc_db_prod.tracktrainingproperty
 CREATE TABLE IF NOT EXISTS `tracktrainingproperty` (
-  `id` bigint(20) NOT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `altitude` int(11) NOT NULL,
   `distance` double NOT NULL,
   `heartbeat` int(11) NOT NULL,
@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS `tracktrainingproperty` (
 -- Daten Export vom Benutzer nicht ausgewählt
 -- Exportiere Struktur von Tabelle otc_db_prod.training
 CREATE TABLE IF NOT EXISTS `training` (
-  `id` bigint(20) NOT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `average_heart_beat` int(11) NOT NULL,
   `date_of_import` datetime NOT NULL,
   `dauer` bigint(20) NOT NULL,
@@ -149,7 +149,7 @@ CREATE TABLE IF NOT EXISTS `training` (
 -- Daten Export vom Benutzer nicht ausgewählt
 -- Exportiere Struktur von Tabelle otc_db_prod.weather
 CREATE TABLE IF NOT EXISTS `weather` (
-  `id` bigint(20) NOT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `imageicon` varchar(255) DEFAULT NULL,
   `wetter` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)

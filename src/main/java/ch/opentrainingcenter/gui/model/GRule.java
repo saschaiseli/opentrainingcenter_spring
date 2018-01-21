@@ -5,13 +5,13 @@ import ch.opentrainingcenter.business.domain.Unit;
 
 public class GRule implements GObject {
 
-	private final long id;
+	private  long id;
 
-	private final long value;
+	private long value;
 
-	private final Section section;
+	private  Section section;
 
-	private final Unit unit;
+	private  Unit unit;
 
 	public GRule(final long id, final long value, final Section section, final Unit unit) {
 		this.id = id;
@@ -24,16 +24,33 @@ public class GRule implements GObject {
 		return id;
 	}
 
+	public void setId(long id) {
+		this.id = id;
+	}
+
 	public long getValue() {
 		return value;
+	}
+
+	public void setValue(long value) {
+		this.value = value;
 	}
 
 	public Section getSection() {
 		return section;
 	}
 
+	public void setSection(Section section) {
+		this.section = section;
+	}
+
 	public Unit getUnit() {
 		return unit;
 	}
+
+	public void setUnit(Unit unit) {
+		this.unit = unit;
+	}
+
 
 }
