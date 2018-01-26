@@ -36,9 +36,10 @@ public class AuthenticationProviderMock implements AuthenticationProvider {
 		if (athletes.isEmpty()) {
 			final Athlete tmp = new Athlete("firstName", "lastName", "sascha.iseli@test.ch", "password");
 			tmp.setMaxHeartRate(195);
+			tmp.setLocaleString("DE");
 			athletes.add(athleteRepo.save(tmp));
 		}
-		return athletes.get(0); // Return our own user class here!
+		return athletes.get(0);
 	}
 
 	@Override

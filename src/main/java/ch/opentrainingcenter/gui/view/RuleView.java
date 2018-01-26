@@ -47,7 +47,7 @@ public class RuleView extends VerticalLayout implements View {
 		email = SecurityContextHolder.getContext().getAuthentication().getName();
 		grid = new Grid<>();
 
-		reloadGrid(email, grid);
+		reloadGrid();
 
 		grid.addColumn(GRule::getValue).setId("value").setCaption("Wert");
 		grid.addColumn(GRule::getUnit).setId("unit").setCaption("Einheit");
@@ -73,7 +73,7 @@ public class RuleView extends VerticalLayout implements View {
 		addButton.addClickListener(event -> {
 			final RuleDialog dialog = new RuleDialog("Neues Ziel definieren", goalService, email);
 			dialog.addCloseListener(closeEvent -> {
-				reloadGrid(email, grid);
+				reloadGrid();
 			});
 			UI.getCurrent().addWindow(dialog);
 		});
@@ -86,7 +86,7 @@ public class RuleView extends VerticalLayout implements View {
 			final RuleDialog dialog = new RuleDialog("Ziel editieren", goalService, email);
 			dialog.updateModel(rule);
 			dialog.addCloseListener(closeEvent -> {
-				reloadGrid(email, grid);
+				reloadGrid();
 			});
 			UI.getCurrent().addWindow(dialog);
 		});
@@ -102,10 +102,10 @@ public class RuleView extends VerticalLayout implements View {
 
 	private void deleteRule(final GRule rule) {
 		goalService.deleteRule(rule.getId());
-		reloadGrid(email, grid);
+		reloadGrid();
 	}
 
-	private void reloadGrid(final String email, final Grid<GRule> grid) {
+	private void reloadGrid() {
 		final List<GRule> rules = goalService.getRulesByUser(email);
 		grid.setItems(rules);
 	}

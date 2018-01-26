@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -56,6 +57,9 @@ public class Athlete implements UserDetails, EntityObject {
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date lastLogin;
+
+	@Column(name = "locale", nullable = false)
+	private String localeString;
 
 	@OneToMany(mappedBy = "athlete", cascade = CascadeType.REMOVE)
 	private Set<Route> routes = new HashSet<>();
@@ -141,6 +145,18 @@ public class Athlete implements UserDetails, EntityObject {
 	public void setMaxHeartRate(final int maxHeartRate) {
 		maxheartrate = maxHeartRate;
 
+	}
+
+	public String getLocaleString() {
+		return localeString;
+	}
+
+	public void setLocaleString(final String localeString) {
+		this.localeString = localeString;
+	}
+
+	public Locale getLocale() {
+		return new Locale(localeString);
 	}
 
 	public Set<Health> getHealths() {

@@ -78,8 +78,6 @@ public class Health {
 	}
 
 	@Override
-	@SuppressWarnings("nls")
-
 	public String toString() {
 		return "Health [athlete=" + athlete + ", weight=" + weight + ", cardio=" + cardio + ", dateofmeasure="
 				+ dateofmeasure + "]";

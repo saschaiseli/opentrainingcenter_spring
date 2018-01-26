@@ -12,8 +12,6 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -24,15 +22,21 @@ import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-@NamedQueries({ //
-		@NamedQuery(name = "Training.getTrainingByAthlete", query = "SELECT t FROM TRAINING t where t.athlete=:athlete order by t.id desc") //
-})
+@NamedQueries({ // //
+		@NamedQuery(name = "Training.findSimpleTrainingByEmail", //
+				query = "SELECT NEW ch.opentrainingcenter.gui.model.GSimpleTraining(t.id "//
+						+ ",t.dauer,t.laengeInMeter,t.averageHeartBeat,t.maxHeartBeat,t.trainingEffect)" //
+						+ "FROM TRAINING t WHERE t.athlete.email=?1 order by t.id desc"),
+		@NamedQuery(name = "Training.findSimpleTrainingByEmailAndStartDate", //
+				query = "SELECT NEW ch.opentrainingcenter.gui.model.GSimpleTraining(t.id "//
+						+ ",t.dauer,t.laengeInMeter,t.averageHeartBeat,t.maxHeartBeat,t.trainingEffect)" // "
+						+ "FROM TRAINING t WHERE t.athlete.email=?1 and t.id>=?2 order by t.id desc"),
+		@NamedQuery(name = "Training.findTrainingByEmail", query = "SELECT t FROM TRAINING t where t.athlete=?1 order by t.id desc") })
 @Cacheable
 @Entity(name = "TRAINING")
-public class Training {
+public class Training implements EntityObject {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 	private long dauer;
 	private long laengeInMeter;

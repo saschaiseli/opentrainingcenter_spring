@@ -5,16 +5,19 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.spring.events.EventBus;
 
 import com.vaadin.annotations.Theme;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewDisplay;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.spring.annotation.SpringViewDisplay;
 import com.vaadin.spring.navigator.SpringNavigator;
+import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.AbstractOrderedLayout;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
@@ -51,6 +54,9 @@ public class MainUI extends UI implements ViewDisplay {
 	@Autowired
 	private FileUploadHandlerService uploadService;
 
+	@Autowired
+	private EventBus.UIEventBus eventBus;
+
 	@PostConstruct
 	public void init() {
 		springNavigator.setErrorView(ErrorView.class);
@@ -74,6 +80,7 @@ public class MainUI extends UI implements ViewDisplay {
 
 		final HorizontalLayout menuAndContentLayout = new HorizontalLayout();
 		menuAndContentLayout.setSizeFull();
+		menuAndContentLayout.setMargin(false);
 
 		final Panel leftMenuPanel = new Panel();
 		final VerticalLayout leftMenuLayout = new VerticalLayout();
@@ -94,30 +101,34 @@ public class MainUI extends UI implements ViewDisplay {
 
 		rootLayout.addComponent(new Label("footer"));
 		rootLayout.setExpandRatio(menuAndContentLayout, 1.0f);
+		final MarginInfo info = new MarginInfo(false, true, true, true);
+		rootLayout.setMargin(info);
 		setContent(rootLayout);
 
 	}
 
 	private void createHeader(final VerticalLayout root) {
-		final HorizontalLayout headerLayout = new HorizontalLayout();
-		headerLayout.setMargin(false);
+		final AbsoluteLayout headerLayout = new AbsoluteLayout();
+		headerLayout.setWidth("100%");
+		headerLayout.setHeight("45px");
 
-		final Panel headerPanel = new Panel();
-
-		final Button settingsButton = createNavigationButton(headerLayout, SettingsView.VIEW_NAME);
-		headerLayout.setComponentAlignment(settingsButton, Alignment.MIDDLE_RIGHT);
+		final Button settingsButton = createNavButtonWithIcon(SettingsView.VIEW_NAME, VaadinIcons.USER);
+		settingsButton.setDescription("User Einstellungen");
+		headerLayout.addComponent(settingsButton, "right: 60px; top: 10px;");
 
 		final Button logoutButton = createNavigationUIButton("Logout", "/login");
-		headerLayout.addComponent(logoutButton);
-		headerLayout.setComponentAlignment(logoutButton, Alignment.MIDDLE_RIGHT);
+		logoutButton.setDescription("Logout");
+		headerLayout.addComponent(logoutButton, "right: 0px; top: 10px;");
 
-		headerPanel.setContent(headerLayout);
+		headerLayout.setWidth(100, Unit.PERCENTAGE);
+
 		root.addComponent(headerLayout);
-
 	}
 
 	private Button createNavigationUIButton(final String caption, final String url) {
-		final Button button = new Button(caption);
+		final Button button = new Button();
+		button.addStyleName(ValoTheme.BUTTON_SMALL);
+		button.setIcon(VaadinIcons.EXIT);
 		button.addClickListener(event -> {
 			getUI().getPage().setLocation(url);
 		});
@@ -126,15 +137,27 @@ public class MainUI extends UI implements ViewDisplay {
 
 	private void createPopUpButton(final VerticalLayout layout, final String caption) {
 		final Button button = new Button(caption);
+		button.setWidth(layout.getWidth(), layout.getWidthUnits());
 		layout.addComponent(button);
 		button.addClickListener(event -> {
-			final FileUploadDialog dialog = new FileUploadDialog(uploadService);
+			final FileUploadDialog dialog = new FileUploadDialog(uploadService, eventBus);
 			UI.getCurrent().addWindow(dialog);
 		});
 	}
 
+	private Button createNavButtonWithIcon(final String viewName, final VaadinIcons icon) {
+		final Button button = new Button();
+		button.addStyleName(ValoTheme.BUTTON_SMALL);
+		button.setIcon(icon);
+		button.addClickListener(event -> {
+			getUI().getNavigator().navigateTo(viewName);
+		});
+		return button;
+	}
+
 	private Button createNavigationButton(final AbstractOrderedLayout layout, final String viewName) {
 		final Button button = new Button(viewName);
+		button.setWidth(layout.getWidth(), layout.getWidthUnits());
 		layout.addComponent(button);
 		button.addClickListener(event -> {
 			getUI().getNavigator().navigateTo(viewName);
