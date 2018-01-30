@@ -6,7 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class Tracktrainingproperty {
+public class Tracktrainingproperty implements EntityObject {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

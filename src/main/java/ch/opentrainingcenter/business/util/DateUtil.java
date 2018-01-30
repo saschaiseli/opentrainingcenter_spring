@@ -1,7 +1,9 @@
 package ch.opentrainingcenter.business.util;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.WeekFields;
 import java.util.Date;
@@ -46,8 +48,8 @@ public final class DateUtil {
 		return ld.getYear();
 	}
 
-	public static void getNextIndex(final Integer start, final ChronoUnit unit) {
-
+	public static String format(final Date date) {
+		final LocalDateTime ldt = LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+		return ldt.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 	}
-
 }

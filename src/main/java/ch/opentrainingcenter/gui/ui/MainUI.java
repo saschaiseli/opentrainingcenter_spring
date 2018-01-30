@@ -11,6 +11,7 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewDisplay;
+import com.vaadin.server.Resource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.spring.annotation.SpringUI;
@@ -31,6 +32,7 @@ import ch.opentrainingcenter.business.security.SecurityUtils;
 import ch.opentrainingcenter.business.service.FileUploadHandlerService;
 import ch.opentrainingcenter.gui.dialog.FileUploadDialog;
 import ch.opentrainingcenter.gui.view.ActivityView;
+import ch.opentrainingcenter.gui.view.ChartView;
 import ch.opentrainingcenter.gui.view.DashboardView;
 import ch.opentrainingcenter.gui.view.EquipmentView;
 import ch.opentrainingcenter.gui.view.ErrorView;
@@ -85,11 +87,12 @@ public class MainUI extends UI implements ViewDisplay {
 		final Panel leftMenuPanel = new Panel();
 		final VerticalLayout leftMenuLayout = new VerticalLayout();
 		leftMenuLayout.setSizeFull();
-		createNavigationButton(leftMenuLayout, DashboardView.VIEW_NAME);
-		createNavigationButton(leftMenuLayout, ActivityView.VIEW_NAME);
-		createNavigationButton(leftMenuLayout, RuleView.VIEW_NAME);
-		createNavigationButton(leftMenuLayout, EquipmentView.VIEW_NAME);
-		createPopUpButton(leftMenuLayout, "Upload");
+		createNavigationButton(leftMenuLayout, DashboardView.VIEW_NAME, VaadinIcons.DASHBOARD);
+		createNavigationButton(leftMenuLayout, ActivityView.VIEW_NAME, VaadinIcons.SMILEY_O);
+		createNavigationButton(leftMenuLayout, ChartView.VIEW_NAME, VaadinIcons.PIE_BAR_CHART);
+		createNavigationButton(leftMenuLayout, RuleView.VIEW_NAME, VaadinIcons.CHILD);
+		createNavigationButton(leftMenuLayout, EquipmentView.VIEW_NAME, VaadinIcons.SHOP);
+		createPopUpButton(leftMenuLayout, "Upload", VaadinIcons.UPLOAD);
 
 		leftMenuPanel.setContent(leftMenuLayout);
 		menuAndContentLayout.addComponent(leftMenuPanel);
@@ -135,8 +138,9 @@ public class MainUI extends UI implements ViewDisplay {
 		return button;
 	}
 
-	private void createPopUpButton(final VerticalLayout layout, final String caption) {
+	private void createPopUpButton(final VerticalLayout layout, final String caption, final Resource icon) {
 		final Button button = new Button(caption);
+		button.setIcon(icon);
 		button.setWidth(layout.getWidth(), layout.getWidthUnits());
 		layout.addComponent(button);
 		button.addClickListener(event -> {
@@ -155,8 +159,10 @@ public class MainUI extends UI implements ViewDisplay {
 		return button;
 	}
 
-	private Button createNavigationButton(final AbstractOrderedLayout layout, final String viewName) {
+	private Button createNavigationButton(final AbstractOrderedLayout layout, final String viewName,
+			final Resource icon) {
 		final Button button = new Button(viewName);
+		button.setIcon(icon);
 		button.setWidth(layout.getWidth(), layout.getWidthUnits());
 		layout.addComponent(button);
 		button.addClickListener(event -> {

@@ -16,12 +16,12 @@ import ch.opentrainingcenter.business.service.TrainingService;
 import ch.opentrainingcenter.gui.model.GSimpleTraining;
 
 @Component
-public class GSimpleTrainingDataProver
+public class GSimpleTrainingDataProvider
 		extends AbstractBackEndDataProvider<GSimpleTraining, SerializablePredicate<GSimpleTraining>> {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(GSimpleTrainingDataProver.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(GSimpleTrainingDataProvider.class);
 
 	@Autowired
 	private TrainingService trainingService;
@@ -36,7 +36,7 @@ public class GSimpleTrainingDataProver
 	@Override
 	protected int sizeInBackEnd(final Query<GSimpleTraining, SerializablePredicate<GSimpleTraining>> query) {
 		LOGGER.info("sizeInBackEnd");
-		return trainingService.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName()).size();
+		return trainingService.countByAthleteEmail(SecurityContextHolder.getContext().getAuthentication().getName());
 	}
 
 }

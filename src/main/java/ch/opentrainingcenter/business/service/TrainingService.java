@@ -13,11 +13,14 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
 import ch.opentrainingcenter.business.domain.Athlete;
+import ch.opentrainingcenter.business.domain.Training;
+import ch.opentrainingcenter.business.mapper.toGobject.TrainingToGObject;
 import ch.opentrainingcenter.business.repositories.AthleteRepository;
 import ch.opentrainingcenter.business.repositories.TrainingRepository;
 import ch.opentrainingcenter.business.service.chart.ChartDataAggregator;
 import ch.opentrainingcenter.business.service.chart.ChartIndexCompleteService;
 import ch.opentrainingcenter.business.util.DateUtil;
+import ch.opentrainingcenter.gui.model.GExtendedTraining;
 import ch.opentrainingcenter.gui.model.GSimpleTraining;
 
 @Service
@@ -35,6 +38,9 @@ public class TrainingService {
 
 	@Autowired
 	private ChartIndexCompleteService completeService;
+
+	@Autowired
+	private TrainingToGObject mapper;
 
 	public List<GSimpleTraining> findByEmail(final String email) {
 		return repo.findSimpleTrainingByEmail(email);
@@ -57,5 +63,15 @@ public class TrainingService {
 
 	public void delete(final long id) {
 		repo.delete(id);
+	}
+
+	public int countByAthleteEmail(final String name) {
+		return repo.countByAthleteEmail(name);
+	}
+
+	public GExtendedTraining findById(final long id) {
+		final Training training = repo.findTrainingById(id);
+		training.getTrackPoints().stream().count();
+		return mapper.convert(training);
 	}
 }

@@ -31,7 +31,9 @@ import javax.persistence.TemporalType;
 				query = "SELECT NEW ch.opentrainingcenter.gui.model.GSimpleTraining(t.id "//
 						+ ",t.dauer,t.laengeInMeter,t.averageHeartBeat,t.maxHeartBeat,t.trainingEffect)" // "
 						+ "FROM TRAINING t WHERE t.athlete.email=?1 and t.id>=?2 order by t.id desc"),
-		@NamedQuery(name = "Training.findTrainingByEmail", query = "SELECT t FROM TRAINING t where t.athlete=?1 order by t.id desc") })
+		@NamedQuery(name = "Training.findTrainingByEmail", query = "SELECT t FROM TRAINING t where t.athlete=?1 order by t.id desc"),
+		@NamedQuery(name = "Training.findTrainingById", query = "SELECT t FROM TRAINING t join fetch t.trackPoints p where t.id=?1"),
+		@NamedQuery(name = "Training.countByEmail", query = "SELECT count(t) FROM TRAINING t where t.athlete.email=?1") })
 @Cacheable
 @Entity(name = "TRAINING")
 public class Training implements EntityObject {

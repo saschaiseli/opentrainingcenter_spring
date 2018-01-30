@@ -6,6 +6,7 @@ import static com.vaadin.icons.VaadinIcons.ANGLE_LEFT;
 import static com.vaadin.icons.VaadinIcons.ANGLE_RIGHT;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -28,6 +29,7 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.RadioButtonGroup;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
@@ -58,6 +60,8 @@ public class ActivityView extends VerticalLayout implements View, EventBusListen
 	private TrainingService trainingService;
 
 	private PagedDataProvider<GSimpleTraining, SerializablePredicate<GSimpleTraining>> pagedDP;
+
+	private Panel detail;
 
 	@PostConstruct
 	public void init() {
@@ -95,6 +99,8 @@ public class ActivityView extends VerticalLayout implements View, EventBusListen
 		grid.setDataProvider(pagedDP);
 		final PagingControls<GSimpleTraining> pc = pagedDP.getPagingControls();
 
+		grid.addSelectionListener(event -> show(event.getFirstSelectedItem()));
+
 		final HorizontalLayout pages = new HorizontalLayout();
 		pages.addComponent(createPCButton(ANGLE_DOUBLE_LEFT, e -> pc.setPageNumber(0)));
 		pages.addComponent(createPCButton(ANGLE_LEFT, e -> pc.previousPage()));
@@ -109,6 +115,18 @@ public class ActivityView extends VerticalLayout implements View, EventBusListen
 		addComponent(controls);
 		setComponentAlignment(controls, Alignment.MIDDLE_CENTER);
 
+		detail = new Panel("Detail");
+		addComponent(detail);
+
+	}
+
+	private Object show(final Optional<GSimpleTraining> training) {
+		if (training.isPresent()) {
+			removeComponent(detail);
+			detail = new DetailPanel(training.get(), trainingService);
+			addComponent(detail);
+		}
+		return null;
 	}
 
 	private Button createPCButton(final VaadinIcons icon, final ClickListener listener) {
@@ -126,7 +144,6 @@ public class ActivityView extends VerticalLayout implements View, EventBusListen
 		final Button button = new Button(VaadinIcons.EDIT);
 		button.addStyleName(ValoTheme.BUTTON_SMALL);
 		button.addClickListener(e -> {
-
 		});
 		return button;
 	}

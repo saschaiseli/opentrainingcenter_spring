@@ -1,5 +1,6 @@
 package ch.opentrainingcenter.business.repositories;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -99,4 +100,11 @@ public class TrainingRepositoryTest {
 		assertTrue("Trainingsdatum < start", tr.isEmpty());
 	}
 
+	@Test
+	public void testCountByAthleteEmail() {
+		training = repo.save(training);
+
+		final int size = repo.countByAthleteEmail(EMAIL);
+		assertEquals(1, size);
+	}
 }

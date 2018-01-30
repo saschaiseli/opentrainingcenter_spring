@@ -14,4 +14,8 @@ public interface TrainingRepository extends JpaRepository<Training, Long> {
 	public List<Training> findTrainingByEmail(String email);
 
 	public List<GSimpleTraining> findSimpleTrainingByEmailAndStartDate(String email, long milliStart);
+
+	public int countByAthleteEmail(String email);
+
+	public Training findTrainingById(long id);
 }
