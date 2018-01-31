@@ -2,6 +2,8 @@ package ch.opentrainingcenter.business.repositories;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,7 +22,6 @@ import ch.opentrainingcenter.business.domain.Unit;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("test")
 @PropertySource("classpath:application-test.properties")
-
 @SpringBootTest(classes = { AppConfig.class })
 public class RuleRepoTest {
 	@Autowired
@@ -43,9 +44,9 @@ public class RuleRepoTest {
 	public void testSaveRule() {
 		final Rule rule = new Rule();
 		rule.setId(1);
-		rule.setType(Unit.DISTANCE);
+		rule.setUnit(Unit.DISTANCE);
 		rule.setValue(123L);
-		rule.setUnit(Section.PER_MONTH);
+		rule.setSection(Section.PER_MONTH);
 		rule.setAthlete(athlete);
 
 		final Rule savedRule = ruleRepo.save(rule);
@@ -54,19 +55,13 @@ public class RuleRepoTest {
 	}
 
 	@Test
-	@Sql(scripts = "classpath:db/add-user.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+	@Sql(scripts = { "classpath:db/add-user.sql",
+			"classpath:db/add-rule.sql" }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 	@Sql(scripts = { "classpath:db/delete-rules.sql",
 			"classpath:db/delete-users.sql" }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-	public void testSaveRule2() {
-		final Rule rule = new Rule();
-		rule.setId(1);
-		rule.setType(Unit.DISTANCE);
-		rule.setValue(123L);
-		rule.setUnit(Section.PER_MONTH);
-		rule.setAthlete(athlete);
+	public void testFindByEmail() {
+		final List<Rule> oneRule = ruleRepo.findByAthlete(athlete);
 
-		final Rule savedRule = ruleRepo.save(rule);
-
-		assertNotNull(savedRule);
+		assertNotNull(oneRule.get(0));
 	}
 }

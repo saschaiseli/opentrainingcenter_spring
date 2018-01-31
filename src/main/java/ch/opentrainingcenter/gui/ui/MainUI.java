@@ -5,14 +5,20 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.spring.events.EventBus;
 
 import com.vaadin.annotations.Theme;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewDisplay;
+import com.vaadin.server.Resource;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.spring.annotation.SpringViewDisplay;
 import com.vaadin.spring.navigator.SpringNavigator;
+import com.vaadin.ui.AbsoluteLayout;
+import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
@@ -26,9 +32,11 @@ import ch.opentrainingcenter.business.security.SecurityUtils;
 import ch.opentrainingcenter.business.service.FileUploadHandlerService;
 import ch.opentrainingcenter.gui.dialog.FileUploadDialog;
 import ch.opentrainingcenter.gui.view.ActivityView;
+import ch.opentrainingcenter.gui.view.ChartView;
 import ch.opentrainingcenter.gui.view.DashboardView;
 import ch.opentrainingcenter.gui.view.EquipmentView;
 import ch.opentrainingcenter.gui.view.ErrorView;
+import ch.opentrainingcenter.gui.view.RuleView;
 import ch.opentrainingcenter.gui.view.SettingsView;
 
 @Theme(ValoTheme.THEME_NAME)
@@ -40,23 +48,26 @@ public class MainUI extends UI implements ViewDisplay {
 
 	private static final long serialVersionUID = 1L;
 
-	private Panel mainPanel;
+	private Panel contentPanel;
+
 	@Autowired
 	private SpringNavigator springNavigator;
 
 	@Autowired
 	private FileUploadHandlerService uploadService;
 
+	@Autowired
+	private EventBus.UIEventBus eventBus;
+
 	@PostConstruct
 	public void init() {
 		springNavigator.setErrorView(ErrorView.class);
-		mainPanel = new Panel();
+		contentPanel = new Panel();
 
 	}
 
 	@Override
 	public void init(final VaadinRequest request) {
-
 		if (SecurityUtils.isAdmin()) {
 			getUI().getNavigator().navigateTo(DashboardView.VIEW_NAME);
 		} else {
@@ -64,57 +75,105 @@ public class MainUI extends UI implements ViewDisplay {
 			getUI().getPage().setLocation("/login");
 		}
 
-		final VerticalLayout root = new VerticalLayout();
-		root.setSizeFull();
+		final VerticalLayout rootLayout = new VerticalLayout();
+		rootLayout.setSizeFull();
 
-		root.addComponent(new Label("My Application"));
+		createHeader(rootLayout);
 
-		final HorizontalLayout menuview = new HorizontalLayout();
-		menuview.setSizeFull();
+		final HorizontalLayout menuAndContentLayout = new HorizontalLayout();
+		menuAndContentLayout.setSizeFull();
+		menuAndContentLayout.setMargin(false);
 
-		final Panel menuPanel = new Panel();
-		final VerticalLayout menuLayout = new VerticalLayout();
-		menuLayout.setSizeFull();
-		createNavigationButton(menuLayout, DashboardView.VIEW_NAME);
-		createNavigationButton(menuLayout, ActivityView.VIEW_NAME);
-		createNavigationButton(menuLayout, EquipmentView.VIEW_NAME);
-		createNavigationButton(menuLayout, SettingsView.VIEW_NAME);
-		createPopUpButton(menuLayout, "Upload");
+		final Panel leftMenuPanel = new Panel();
+		final VerticalLayout leftMenuLayout = new VerticalLayout();
+		leftMenuLayout.setSizeFull();
+		createNavigationButton(leftMenuLayout, DashboardView.VIEW_NAME, VaadinIcons.DASHBOARD);
+		createNavigationButton(leftMenuLayout, ActivityView.VIEW_NAME, VaadinIcons.SMILEY_O);
+		createNavigationButton(leftMenuLayout, ChartView.VIEW_NAME, VaadinIcons.PIE_BAR_CHART);
+		createNavigationButton(leftMenuLayout, RuleView.VIEW_NAME, VaadinIcons.CHILD);
+		createNavigationButton(leftMenuLayout, EquipmentView.VIEW_NAME, VaadinIcons.SHOP);
+		createPopUpButton(leftMenuLayout, "Upload", VaadinIcons.UPLOAD);
 
-		menuPanel.setContent(menuLayout);
-		menuview.addComponent(menuPanel);
-		menuview.addComponent(mainPanel);
+		leftMenuPanel.setContent(leftMenuLayout);
+		menuAndContentLayout.addComponent(leftMenuPanel);
+		menuAndContentLayout.addComponent(contentPanel);
 
-		menuview.setExpandRatio(menuPanel, 0.1f);
-		menuview.setExpandRatio(mainPanel, 0.9f);
-		root.addComponent(menuview);
+		menuAndContentLayout.setExpandRatio(leftMenuPanel, 0.1f);
+		menuAndContentLayout.setExpandRatio(contentPanel, 0.9f);
+		rootLayout.addComponent(menuAndContentLayout);
 
-		root.addComponent(new Label("footer"));
-		root.setExpandRatio(menuview, 1.0f);
-		setContent(root);
+		rootLayout.addComponent(new Label("footer"));
+		rootLayout.setExpandRatio(menuAndContentLayout, 1.0f);
+		final MarginInfo info = new MarginInfo(false, true, true, true);
+		rootLayout.setMargin(info);
+		setContent(rootLayout);
 
 	}
 
-	private void createPopUpButton(final VerticalLayout layout, final String caption) {
+	private void createHeader(final VerticalLayout root) {
+		final AbsoluteLayout headerLayout = new AbsoluteLayout();
+		headerLayout.setWidth("100%");
+		headerLayout.setHeight("45px");
+
+		final Button settingsButton = createNavButtonWithIcon(SettingsView.VIEW_NAME, VaadinIcons.USER);
+		settingsButton.setDescription("User Einstellungen");
+		headerLayout.addComponent(settingsButton, "right: 60px; top: 10px;");
+
+		final Button logoutButton = createNavigationUIButton("Logout", "/login");
+		logoutButton.setDescription("Logout");
+		headerLayout.addComponent(logoutButton, "right: 0px; top: 10px;");
+
+		headerLayout.setWidth(100, Unit.PERCENTAGE);
+
+		root.addComponent(headerLayout);
+	}
+
+	private Button createNavigationUIButton(final String caption, final String url) {
+		final Button button = new Button();
+		button.addStyleName(ValoTheme.BUTTON_SMALL);
+		button.setIcon(VaadinIcons.EXIT);
+		button.addClickListener(event -> {
+			getUI().getPage().setLocation(url);
+		});
+		return button;
+	}
+
+	private void createPopUpButton(final VerticalLayout layout, final String caption, final Resource icon) {
 		final Button button = new Button(caption);
+		button.setIcon(icon);
+		button.setWidth(layout.getWidth(), layout.getWidthUnits());
 		layout.addComponent(button);
 		button.addClickListener(event -> {
-			final FileUploadDialog dialog = new FileUploadDialog(uploadService);
+			final FileUploadDialog dialog = new FileUploadDialog(uploadService, eventBus);
 			UI.getCurrent().addWindow(dialog);
 		});
 	}
 
-	private void createNavigationButton(final VerticalLayout layout, final String viewName) {
+	private Button createNavButtonWithIcon(final String viewName, final VaadinIcons icon) {
+		final Button button = new Button();
+		button.addStyleName(ValoTheme.BUTTON_SMALL);
+		button.setIcon(icon);
+		button.addClickListener(event -> {
+			getUI().getNavigator().navigateTo(viewName);
+		});
+		return button;
+	}
+
+	private Button createNavigationButton(final AbstractOrderedLayout layout, final String viewName,
+			final Resource icon) {
 		final Button button = new Button(viewName);
+		button.setIcon(icon);
+		button.setWidth(layout.getWidth(), layout.getWidthUnits());
 		layout.addComponent(button);
 		button.addClickListener(event -> {
 			getUI().getNavigator().navigateTo(viewName);
 		});
+		return button;
 	}
 
 	@Override
 	public void showView(final View view) {
-		mainPanel.setContent((Component) view);
+		contentPanel.setContent((Component) view);
 	}
 
 }

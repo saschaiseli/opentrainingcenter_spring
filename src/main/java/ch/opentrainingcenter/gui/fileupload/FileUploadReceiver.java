@@ -7,6 +7,9 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.vaadin.spring.events.EventBus;
+import org.vaadin.spring.events.EventScope;
+
 import com.vaadin.server.Page;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
@@ -34,13 +37,18 @@ public class FileUploadReceiver implements Receiver, SucceededListener {
 
 	private Path path;
 
-	public FileUploadReceiver(final FileUploadHandlerService uploadService, final Window window) {
+	private final EventBus.UIEventBus eventBus;
+
+	public FileUploadReceiver(final FileUploadHandlerService uploadService, final Window window,
+			final EventBus.UIEventBus eventBus) {
 		this.uploadService = uploadService;
 		this.window = window;
+		this.eventBus = eventBus;
 	}
 
 	@Override
 	public OutputStream receiveUpload(final String filename, final String mimeType) {
+		window.close();
 		FileOutputStream fos = null;
 		try {
 			final Path dir = Files.createTempDirectory("opentrainingcenter_");
@@ -56,7 +64,6 @@ public class FileUploadReceiver implements Receiver, SucceededListener {
 
 	@Override
 	public void uploadSucceeded(final SucceededEvent event) {
-		window.close();
 		final String message = String.format(SUCCESS, event.getFilename());
 		try {
 			uploadService.handleFile(path);
@@ -64,6 +71,7 @@ public class FileUploadReceiver implements Receiver, SucceededListener {
 			new Notification(ERROR_CONVERT, e.getMessage(), Type.ERROR_MESSAGE, true).show(Page.getCurrent());
 			return;
 		}
+		eventBus.publish(EventScope.APPLICATION, "", "Hello World from Application");
 		new Notification(message, Type.HUMANIZED_MESSAGE).show(Page.getCurrent());
 	}
 

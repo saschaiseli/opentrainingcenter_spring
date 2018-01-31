@@ -2,6 +2,7 @@ package ch.opentrainingcenter.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
@@ -32,6 +33,7 @@ import ch.opentrainingcenter.business.security.AuthenticationProviderMock;
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true, proxyTargetClass = true)
 @EnableVaadinSharedSecurity
 @EnableJpaAuditing
+@ComponentScan
 public class WebSecurityMockConfiguration extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private AuthenticationProviderMock mock;
