@@ -35,6 +35,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 import ch.opentrainingcenter.business.service.TrainingService;
+import ch.opentrainingcenter.business.service.chart.LineChartDataService;
 import ch.opentrainingcenter.gui.model.ActitvityPeriod;
 import ch.opentrainingcenter.gui.model.GSimpleTraining;
 
@@ -55,6 +56,9 @@ public class ActivityView extends VerticalLayout implements View, EventBusListen
 
 	@Autowired
 	private DataProvider<GSimpleTraining, SerializablePredicate<GSimpleTraining>> dp;
+
+	@Autowired
+	private LineChartDataService dataService;
 
 	@Autowired
 	private TrainingService trainingService;
@@ -123,7 +127,7 @@ public class ActivityView extends VerticalLayout implements View, EventBusListen
 	private Object show(final Optional<GSimpleTraining> training) {
 		if (training.isPresent()) {
 			removeComponent(detail);
-			detail = new DetailPanel(training.get(), trainingService);
+			detail = new DetailPanel(training.get(), trainingService, dataService);
 			addComponent(detail);
 		}
 		return null;

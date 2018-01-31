@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import ch.opentrainingcenter.business.domain.Tracktrainingproperty;
 import ch.opentrainingcenter.business.domain.Training;
 import ch.opentrainingcenter.business.mapper.MapToGObject;
+import ch.opentrainingcenter.gui.model.GExtendedData;
 import ch.opentrainingcenter.gui.model.GExtendedTraining;
 import ch.opentrainingcenter.gui.model.GSimpleTraining;
 
@@ -24,12 +25,13 @@ public class TrainingToGObject implements MapToGObject<GExtendedTraining, Traini
 	private final TrackpointToGObject pointMapper = new TrackpointToGObject();
 
 	@Override
-	public GExtendedTraining convert(final Training training) {
+	public GExtendedTraining convert(final Training t) {
 		final Instant start = Instant.now();
-		final GSimpleTraining simpleTraining = mapper.convert(training);
+		final GSimpleTraining simpleTraining = mapper.convert(t);
 		final GExtendedTraining result = new GExtendedTraining(simpleTraining);
-		final List<Tracktrainingproperty> trackPoints = training.getTrackPoints();
+		final List<Tracktrainingproperty> trackPoints = t.getTrackPoints();
 		result.addTrackPoints(trackPoints.stream().map(x -> pointMapper.convert(x)).collect(Collectors.toList()));
+		result.setExtendedData(new GExtendedData(t.getUpMeter(), t.getDownMeter(), t.getGeoQuality(), t.getMaxSpeed()));
 		final Instant end = Instant.now();
 		final Duration timeElapsed = Duration.between(end, start);
 		LOGGER.info(String.format("Convertig trackpoints : %s [ms]", timeElapsed.toMillis()));

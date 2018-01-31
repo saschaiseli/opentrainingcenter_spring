@@ -1,6 +1,11 @@
 package ch.opentrainingcenter.gui.model;
 
+import java.time.format.DateTimeFormatter;
+
 public class GTrackPoint implements GObject {
+
+	final DateTimeFormatter tf = DateTimeFormatter.ofPattern("HH:mm:ss");
+
 	private final double distance;
 	private final int heartbeat;
 	private final int altitude;

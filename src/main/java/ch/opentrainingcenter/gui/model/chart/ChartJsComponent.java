@@ -20,7 +20,6 @@ import com.byteowls.vaadin.chartjs.data.LineDataset;
 import com.byteowls.vaadin.chartjs.utils.ColorUtils;
 
 public class ChartJsComponent {
-
 	private final String borderColor;
 	private final String backColor;
 	private final String label;
@@ -43,6 +42,21 @@ public class ChartJsComponent {
 		return lineConfig;
 	}
 
+	public LineChartConfig createConfig2(final Map<Double, Integer> data, final ChronoUnit unit) {
+		final List<String> sortedYAxis = data.keySet().stream().sorted().map(x -> {
+			// final LocalTime d = LocalTime.ofSecondOfDay(x);
+
+			return x.toString();
+		}).collect(Collectors.toList());
+		final List<Double> sortedXaxis = new ArrayList<>();
+		data.keySet().stream().sorted().map(f -> sortedXaxis.add(data.get(f).doubleValue())).count();
+
+		lineConfig = updateLineConfig(sortedXaxis.stream(), sortedYAxis);
+		updateData(sortedXaxis, lineConfig);
+
+		return lineConfig;
+	}
+
 	public ChartJs createChart(final ChartConfig config) {
 		return new ChartJs(config);
 	}
@@ -56,25 +70,23 @@ public class ChartJsComponent {
 			case MONTHS:
 				final int monat = Integer.valueOf(s.substring(4, s.length())).intValue();
 				return new DateFormatSymbols().getMonths()[monat - 1];
-			case YEARS:
-				return s;
 			default:
-				throw new IllegalArgumentException("Wron unit: " + unit);
+				return s;
 			}
 		};
 		final List<String> yAxis = data.keySet().stream().sorted().map(mapper).collect(Collectors.toList());
 		return yAxis;
 	}
 
-	private LineChartConfig updateLineConfig(final Stream<Double> data, final List<String> yAxis) {
+	private LineChartConfig updateLineConfig(final Stream<? extends Number> data, final List<String> yAxis) {
 		final DoubleSummaryStatistics stat = getStatistics(data);
 		final LineChartConfig lineConfig = LineChartConfigCreator.getChartConfigForDashboard(
 				yAxis.toArray(new String[1]), (int) stat.getMin(), (int) stat.getMax(), label);
 		return lineConfig;
 	}
 
-	private DoubleSummaryStatistics getStatistics(final Stream<Double> data) {
-		final DoubleStream stream = data.mapToDouble(Double::valueOf);
+	private DoubleSummaryStatistics getStatistics(final Stream<? extends Number> data) {
+		final DoubleStream stream = data.mapToDouble(Number::doubleValue);
 		final DoubleSummaryStatistics stat = stream.summaryStatistics();
 		return stat;
 	}

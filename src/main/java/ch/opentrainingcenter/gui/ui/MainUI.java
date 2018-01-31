@@ -76,7 +76,7 @@ public class MainUI extends UI implements ViewDisplay {
 		}
 
 		final VerticalLayout rootLayout = new VerticalLayout();
-		rootLayout.setSizeFull();
+		// rootLayout.setSizeFull();
 
 		createHeader(rootLayout);
 

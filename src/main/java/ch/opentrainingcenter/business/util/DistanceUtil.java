@@ -14,7 +14,7 @@ public final class DistanceUtil {
 
 	/**
 	 * z.B. aus 10123.234535 --> 10.123
-	 * 
+	 *
 	 * @param distanceInMeter
 	 * @return distanz in kilometer, gerundet auf einen meter
 	 */
@@ -29,22 +29,22 @@ public final class DistanceUtil {
 
 	/**
 	 * z.B. aus 10123.234535 --> 10.123km
-	 * 
+	 *
 	 * @param distanceInMeter
 	 * @return distanz in kilometer, gerundet auf einen meter und mit einheit
 	 */
 	public static String roundDistanceFromMeterToKmMitEinheit(final double distanceInMeter) {
-		return roundDistanceFromMeterToKm(distanceInMeter) + "km"; //$NON-NLS-1$
+		return roundDistanceFromMeterToKm(distanceInMeter) + " km"; //$NON-NLS-1$
 	}
 
 	/**
 	 * Berechnet die Pace (min/km)
-	 * 
+	 *
 	 * <pre>
-	 * z.b 1km in 5 min 15 sekunden 
+	 * z.b 1km in 5 min 15 sekunden
 	 * --> muss 5:15 ergeben
 	 * </pre>
-	 * 
+	 *
 	 * @param distanceInMeter
 	 * @param timeInSeconds
 	 * @return min/km im format MM:SS
@@ -67,7 +67,7 @@ public final class DistanceUtil {
 
 	/**
 	 * Berechnet aus m/s die pace
-	 * 
+	 *
 	 * @param maximumSpeed
 	 * @return
 	 */
