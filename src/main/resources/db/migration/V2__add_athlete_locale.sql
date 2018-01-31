@@ -1,0 +1,1 @@
+ALTER TABLE `athlete` add `locale` varchar(10) NOT NULL;

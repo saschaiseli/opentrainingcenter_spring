@@ -17,14 +17,9 @@ public class AthleteDetailService implements UserDetailsService {
 	@Autowired
 	private AthleteRepository athleteRepository;
 
-	public AthleteDetailService(final AthleteRepository repository) {
-		// athleteRepository = repository;
-
-		LOGGER.info("AthleteDetailService created with athleteRepository " + athleteRepository);
-	}
-
 	@Override
 	public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
+		LOGGER.info("loadUserByUsername " + username);
 		final Athlete athlete = athleteRepository.findByEmail(username);
 		return athlete;
 	}

@@ -3,6 +3,8 @@ package ch.opentrainingcenter.business.domain;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -12,6 +14,7 @@ import javax.persistence.TemporalType;
 @Entity
 public class Health {
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 
 	@ManyToOne
@@ -75,8 +78,6 @@ public class Health {
 	}
 
 	@Override
-	@SuppressWarnings("nls")
-
 	public String toString() {
 		return "Health [athlete=" + athlete + ", weight=" + weight + ", cardio=" + cardio + ", dateofmeasure="
 				+ dateofmeasure + "]";

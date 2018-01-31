@@ -1,16 +1,18 @@
 package ch.opentrainingcenter.business.domain;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -29,11 +31,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 		@NamedQuery(name = "Athlete.findByEmailAndPassword", query = "SELECT a FROM ATHLETE a where a.email=?1 and a.password=?2") })
 
 @Entity(name = "ATHLETE")
-public class Athlete implements Serializable, UserDetails {
+public class Athlete implements UserDetails, EntityObject {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 
 	@Column(nullable = false)
@@ -54,6 +57,9 @@ public class Athlete implements Serializable, UserDetails {
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date lastLogin;
+
+	@Column(name = "locale", nullable = false)
+	private String localeString;
 
 	@OneToMany(mappedBy = "athlete", cascade = CascadeType.REMOVE)
 	private Set<Route> routes = new HashSet<>();
@@ -139,6 +145,18 @@ public class Athlete implements Serializable, UserDetails {
 	public void setMaxHeartRate(final int maxHeartRate) {
 		maxheartrate = maxHeartRate;
 
+	}
+
+	public String getLocaleString() {
+		return localeString;
+	}
+
+	public void setLocaleString(final String localeString) {
+		this.localeString = localeString;
+	}
+
+	public Locale getLocale() {
+		return new Locale(localeString);
 	}
 
 	public Set<Health> getHealths() {
