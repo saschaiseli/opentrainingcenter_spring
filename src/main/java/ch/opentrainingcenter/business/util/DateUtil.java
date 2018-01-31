@@ -15,7 +15,7 @@ public final class DateUtil {
 	}
 
 	public static LocalDate getLastDayOfWeek(final LocalDate now, final Locale locale) {
-		final LocalDate nextWeekEnd = LocalDate.now().with(WeekFields.of(locale).dayOfWeek(), 7);
+		final LocalDate nextWeekEnd = now.with(WeekFields.of(locale).dayOfWeek(), 7);
 		return nextWeekEnd;
 	}
 
