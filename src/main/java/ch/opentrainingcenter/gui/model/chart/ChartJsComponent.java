@@ -5,6 +5,7 @@ import java.text.DateFormatSymbols;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.DoubleSummaryStatistics;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -44,15 +45,14 @@ public class ChartJsComponent {
 
 	public LineChartConfig createConfig2(final Map<Double, Integer> data, final ChronoUnit unit) {
 		final List<String> sortedYAxis = data.keySet().stream().sorted().map(x -> {
-			// final LocalTime d = LocalTime.ofSecondOfDay(x);
-
-			return x.toString();
+			return String.valueOf(x.intValue());
 		}).collect(Collectors.toList());
 		final List<Double> sortedXaxis = new ArrayList<>();
 		data.keySet().stream().sorted().map(f -> sortedXaxis.add(data.get(f).doubleValue())).count();
 
 		lineConfig = updateLineConfig(sortedXaxis.stream(), sortedYAxis);
-		updateData(sortedXaxis, lineConfig);
+		updateData(sortedXaxis, sortedXaxis.stream().map(x -> x.doubleValue() / 2).collect(Collectors.toList()),
+				lineConfig);
 
 		return lineConfig;
 	}
@@ -82,6 +82,9 @@ public class ChartJsComponent {
 		final DoubleSummaryStatistics stat = getStatistics(data);
 		final LineChartConfig lineConfig = LineChartConfigCreator.getChartConfigForDashboard(
 				yAxis.toArray(new String[1]), (int) stat.getMin(), (int) stat.getMax(), label);
+
+		lineConfig.data()
+				.addDataset(new LineDataset().backgroundColor("gba(220,220,220,0.5)").label("hoehe").yAxisID("height"));
 		return lineConfig;
 	}
 
@@ -98,6 +101,26 @@ public class ChartJsComponent {
 			lds.borderColor(borderColor);
 			lds.backgroundColor(backColor);
 		}
+	}
+
+	private void updateData(final List<Double> values, final List<Double> second, final LineChartConfig lineConfig) {
+		final Iterator<Dataset<?, ?>> iterator = lineConfig.data().getDatasets().iterator();
+		final LineDataset lds = (LineDataset) iterator.next();
+		lds.dataAsList(values);
+		lds.borderColor(borderColor);
+		lds.backgroundColor(backColor);
+
+		final LineDataset lds2 = (LineDataset) iterator.next();
+		lds2.dataAsList(second);
+		// lds2.borderColor(borderColor);
+		// lds2.backgroundColor(backColor);
+
+		// for (final Dataset<?, ?> ds : lineConfig.data().getDatasets()) {
+		// final LineDataset lds = (LineDataset) ds;
+		// lds.dataAsList(values);
+		// lds.borderColor(borderColor);
+		// lds.backgroundColor(backColor);
+		// }
 	}
 
 	private String getColor(final Color color) {

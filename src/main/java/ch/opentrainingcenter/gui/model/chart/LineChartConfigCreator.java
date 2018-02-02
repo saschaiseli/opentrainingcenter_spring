@@ -23,8 +23,12 @@ public final class LineChartConfigCreator {
 				.and().hover().mode(InteractionMode.NEAREST).intersect(true).and().scales() //
 				.add(Axis.X, new CategoryScale().display(true).scaleLabel().display(true) //
 						.and().position(Position.TOP))
-				.add(Axis.Y, new LinearScale().display(true).scaleLabel().display(true).labelString("").and().ticks()
-						.suggestedMin(min).suggestedMax(max).and().position(Position.RIGHT))
+				.add(Axis.Y,
+						new LinearScale().display(true).scaleLabel().display(true).labelString("").and().ticks()
+								.suggestedMin(min).suggestedMax(max).and().position(Position.RIGHT).id("heart"))
+				.add(Axis.Y,
+						new LinearScale().display(true).scaleLabel().display(true).labelString("Höhe").and().ticks()
+								.suggestedMin(min).suggestedMax(max).and().position(Position.LEFT).id("height"))
 				.and().done();
 		return lineConfig;
 	}
