@@ -8,12 +8,12 @@ pipeline {
   stages {
     stage('Test') {
       steps {
-        sh './mvnw compile test'
+        sh 'mvn compile test'
       }
     }
     stage('Package') {
       steps {
-        sh './mvnw package'
+        sh 'mvn package'
       }
     }
     stage('Cleanup') {
