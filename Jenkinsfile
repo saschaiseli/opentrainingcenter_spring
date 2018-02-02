@@ -1,7 +1,7 @@
 pipeline {
   agent {
     docker {
-      image 'ubuntu'
+      image 'maven:3.5-jdk-8'
     }
     
   }
