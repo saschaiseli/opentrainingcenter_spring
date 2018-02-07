@@ -1,4 +1,4 @@
-package ch.opentrainingcenter.gui.model.chart;
+package ch.opentrainingcenter.gui.chart;
 
 import java.awt.Color;
 import java.util.DoubleSummaryStatistics;
@@ -20,21 +20,23 @@ import com.byteowls.vaadin.chartjs.options.types.LineChartOptions;
 import com.byteowls.vaadin.chartjs.utils.ColorUtils;
 
 public class LineChartComponent {
+
 	private final LineChartConfig lineConfig = new LineChartConfig();
 
-	public void addLine(final Map<Integer, Double> data, final String label, final Position position,
+	public LineDataset addLine(final Map<Integer, Double> data, final String label, final Position position,
 			final Color borderColor, final Color backColor) {
 		final DoubleSummaryStatistics statistics = getStatistics(data.values().stream());
+		final int min = statistics.getMin() == 0d ? -1 : (int) (statistics.getMin() * 0.9);
+		final int max = (int) (statistics.getMax() * 1.05d);
 		final LineDataset lds = new LineDataset();
 		final List<Integer> sortedKeys = data.keySet().stream().sorted().collect(Collectors.toList());
 
 		final Scales<LineChartOptions> scales = lineConfig.data()
 				.addDataset(lds.label(label).fill(false).yAxisID(label))//
 				.and().options().responsive(true).title().and().tooltips().mode(InteractionMode.INDEX).intersect(false)
-				.and().hover().mode(InteractionMode.NEAREST).intersect(true).and().scales().add(Axis.Y,
-						new LinearScale().display(true).scaleLabel().display(true).labelString("").and().ticks()
-								.suggestedMin((int) (0.98 * statistics.getMin()))
-								.suggestedMax((int) (1.02 * statistics.getMax())).and().position(position).id(label));
+				.and().hover().mode(InteractionMode.NEAREST).intersect(true).and().scales()
+				.add(Axis.Y, new LinearScale().display(true).scaleLabel().display(true).labelString("").and().ticks()
+						.suggestedMin(min).suggestedMax(max).and().position(position).id(label));
 		if (lineConfig.data().getLabels() == null) {
 			lineConfig.data().labels(
 					sortedKeys.stream().map(String::valueOf).collect(Collectors.toList()).toArray(new String[1]));
@@ -47,6 +49,7 @@ public class LineChartComponent {
 		lds.backgroundColor(getColor(backColor));
 		lds.pointRadius(0).pointHoverRadius(5);
 		lineConfig.options().elements().line().borderWidth(1);
+		return lds;
 	}
 
 	private DoubleSummaryStatistics getStatistics(final Stream<? extends Number> data) {
@@ -59,7 +62,7 @@ public class LineChartComponent {
 		return lineConfig;
 	}
 
-	private String getColor(final Color color) {
+	public static String getColor(final Color color) {
 		return ColorUtils.toRgb(new int[] { color.getRed(), color.getGreen(), color.getBlue() });
 	}
 }

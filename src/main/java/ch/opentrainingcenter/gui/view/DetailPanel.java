@@ -15,13 +15,12 @@ import com.vaadin.ui.VerticalLayout;
 import ch.opentrainingcenter.business.service.TrainingService;
 import ch.opentrainingcenter.business.service.chart.LineChartDataService;
 import ch.opentrainingcenter.business.util.DateUtil;
+import ch.opentrainingcenter.gui.chart.LineChartComponent;
 import ch.opentrainingcenter.gui.model.GExtendedTraining;
 import ch.opentrainingcenter.gui.model.GSimpleTraining;
-import ch.opentrainingcenter.gui.model.chart.LineChartComponent;
 
 @SuppressWarnings("serial")
 public class DetailPanel extends Panel {
-
 	private final LineChartDataService dataService;
 
 	private final GExtendedTraining tr;
@@ -67,10 +66,11 @@ public class DetailPanel extends Panel {
 		final Panel heartPanel = new Panel("Herzfrequenz");
 		final LineChartComponent lcc = new LineChartComponent();
 
-		lcc.addLine(dataService.getValues(tr.getTrackPoints(), p -> Double.valueOf(p.getHeartbeat())), "herz",
-				Position.RIGHT, Color.RED, Color.LIGHT_GRAY);
-		lcc.addLine(dataService.getValues(tr.getTrackPoints(), p -> Double.valueOf(p.getAltitude())), "hoehe",
-				Position.LEFT, Color.BLUE, Color.LIGHT_GRAY);
+		lcc.addLine(dataService.getValues(tr.getTrackPoints(), p -> Double.valueOf(p.getHeartbeat())), "Herzfrequenz",
+				Position.RIGHT, Color.RED, Color.RED);
+
+		lcc.addLine(dataService.getValues(tr.getTrackPoints(), p -> Double.valueOf(p.getAltitude())), "Höhe",
+				Position.LEFT, Color.BLUE, Color.BLUE);
 
 		final ChartJs chart = new ChartJs(lcc.getConfig());
 		chart.setSizeFull();

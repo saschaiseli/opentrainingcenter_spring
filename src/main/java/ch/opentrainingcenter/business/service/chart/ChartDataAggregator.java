@@ -36,7 +36,9 @@ public class ChartDataAggregator {
 			final Function<GSimpleTraining, Number> f) {
 		final Map<Integer, Double> result = new HashMap<>();
 		for (final Entry<Integer, List<GSimpleTraining>> entry : raw.entrySet()) {
-			final Double sum = entry.getValue().stream().map(f).collect(Collectors.summingDouble(Number::doubleValue));
+			final Double sum = Math.round(
+					entry.getValue().stream().map(f).collect(Collectors.summingDouble(Number::doubleValue)) * 100)
+					/ 100d;
 			result.put(entry.getKey(), sum);
 		}
 		return result;

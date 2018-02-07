@@ -23,7 +23,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 import ch.opentrainingcenter.business.service.TrainingService;
-import ch.opentrainingcenter.gui.component.ChartKachelComponent;
+import ch.opentrainingcenter.gui.component.ChartKachelComponentNG;
 
 @SuppressWarnings("serial")
 @Secured({ "ROLE_ADMIN" })
@@ -38,7 +38,7 @@ public class DashboardView extends VerticalLayout implements View, EventBusListe
 	@Autowired
 	private EventBus.UIEventBus eventBus;
 
-	private final List<ChartKachelComponent> kacheln = new ArrayList<>();
+	private final List<ChartKachelComponentNG> kacheln = new ArrayList<>();
 
 	@PostConstruct
 	public void init() {
@@ -59,12 +59,11 @@ public class DashboardView extends VerticalLayout implements View, EventBusListe
 
 		Responsive.makeResponsive(sparks);
 
-		kacheln.add(new ChartKachelComponent(service, email, ChronoUnit.WEEKS, 8));
-		kacheln.add(new ChartKachelComponent(service, email, ChronoUnit.MONTHS, 4));
-		kacheln.add(new ChartKachelComponent(service, email, ChronoUnit.YEARS, 3));
+		kacheln.add(new ChartKachelComponentNG(service, email, ChronoUnit.WEEKS, 8));
+		kacheln.add(new ChartKachelComponentNG(service, email, ChronoUnit.MONTHS, 4));
+		kacheln.add(new ChartKachelComponentNG(service, email, ChronoUnit.YEARS, 3));
 
 		kacheln.forEach(k -> sparks.addComponent(k));
-
 		return sparks;
 	}
 
