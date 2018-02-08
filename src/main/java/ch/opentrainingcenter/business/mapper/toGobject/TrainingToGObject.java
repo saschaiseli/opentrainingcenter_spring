@@ -32,8 +32,10 @@ public class TrainingToGObject implements MapToGObject<GExtendedTraining, Traini
 		final List<Tracktrainingproperty> trackPoints = t.getTrackPoints();
 		result.addTrackPoints(trackPoints.stream().map(x -> pointMapper.convert(x)).collect(Collectors.toList()));
 		result.setExtendedData(new GExtendedData(t.getUpMeter(), t.getDownMeter(), t.getGeoQuality(), t.getMaxSpeed()));
+		result.setTrainingType(t.getTrainingType());
+
 		final Instant end = Instant.now();
-		final Duration timeElapsed = Duration.between(end, start);
+		final Duration timeElapsed = Duration.between(start, end);
 		LOGGER.info(String.format("Convertig trackpoints : %s [ms]", timeElapsed.toMillis()));
 		return result;
 	}

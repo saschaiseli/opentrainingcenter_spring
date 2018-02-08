@@ -5,6 +5,8 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import ch.opentrainingcenter.business.domain.Athlete;
 import ch.opentrainingcenter.business.domain.Rule;
 import ch.opentrainingcenter.business.domain.Section;
 import ch.opentrainingcenter.business.domain.Unit;
@@ -21,9 +24,27 @@ import ch.opentrainingcenter.business.domain.Unit;
 @ActiveProfiles("test")
 @PropertySource("classpath:application-test.properties")
 @SpringBootTest(classes = { AppConfig.class })
-public class RuleRepoTest extends RepoTestSetUp {
+public class RuleRepoTest {
+
 	@Autowired
 	private RuleRepo ruleRepo;
+	@Autowired
+	private AthleteRepository athleteRepo;
+	private Athlete athlete;
+	private final String EMAIL = "junit@test.ch";
+
+	@Before
+	public void setUp() {
+		athlete = new Athlete("firstName", "lastName", EMAIL, "password");
+		athlete.setMaxHeartRate(195);
+		athlete.setLocaleString("DE");
+		athlete = athleteRepo.save(athlete);
+	}
+
+	@After
+	public void tearDown() {
+		athleteRepo.delete(athlete);
+	}
 
 	@Test
 	public void testSaveRule() {
