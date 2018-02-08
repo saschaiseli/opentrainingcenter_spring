@@ -9,6 +9,8 @@ pipeline {
     stage('Test') {
       steps {
         sh 'mvn clean test -Drun.profiles=test'
+        archive "target/**/*"
+        junit 'target/surefire-reports/*.xml'
       }
     }
     stage('Package') {
@@ -20,12 +22,6 @@ pipeline {
       steps {
         cleanWs(cleanWhenAborted: true, cleanWhenFailure: true, cleanWhenNotBuilt: true, cleanWhenSuccess: true, cleanWhenUnstable: true, cleanupMatrixParent: true, deleteDirs: true)
       }
-    }
-  }
-  post { 
-  	always {
-       archive "target/**/*"
-       junit 'target/surefire-reports/*.xml'
     }
   }
 }
