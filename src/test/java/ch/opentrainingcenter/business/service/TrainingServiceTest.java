@@ -60,9 +60,8 @@ public class TrainingServiceTest {
 		athlete.setMaxHeartRate(195);
 		athlete.setLocaleString("DE");
 		Athlete athleteFromDb = athleteRepo.findByEmail(EMAIL);
-		if (athleteFromDb == null) {
-			athleteFromDb = athleteRepo.save(athlete);
-		}
+
+		athleteFromDb = athleteRepo.save(athlete);
 
 		final RunData runData = new RunData(now, 102, DISTANZ, 4.5);
 		final HeartRate heart = new HeartRate(120, 180);
@@ -75,6 +74,7 @@ public class TrainingServiceTest {
 	@After
 	public void cleanUp() {
 		repo.delete(training);
+		athleteRepo.delete(athlete);
 	}
 
 	@Test
@@ -87,7 +87,7 @@ public class TrainingServiceTest {
 		final Map<Integer, Double> result = service.findByEmailAndDate(EMAIL, ChronoUnit.MONTHS, 12,
 				ldNow.toLocalDate());
 
-		assertEquals(Double.valueOf(DISTANZ).doubleValue() / 1000, result.get(201801), 0.00001);
+		assertEquals(Double.valueOf(DISTANZ).doubleValue() / 1000, result.get(201801), 0.01);
 	}
 
 	@Test
@@ -104,6 +104,6 @@ public class TrainingServiceTest {
 				ldNow.toLocalDate());
 
 		// assertEquals(DISTANZ, result.get(201801), 0.00001);
-		assertEquals(Double.valueOf(2 * DISTANZ).doubleValue() / 1000, result.get(201801), 0.00001);
+		assertEquals(Double.valueOf(2 * DISTANZ).doubleValue() / 1000, result.get(201801), 0.01);
 	}
 }

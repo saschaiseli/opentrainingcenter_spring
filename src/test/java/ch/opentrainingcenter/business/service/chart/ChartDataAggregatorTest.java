@@ -52,7 +52,7 @@ public class ChartDataAggregatorTest {
 
 		final Map<Integer, Double> result = aggregator.aggregateToSum(raw, f);
 
-		assertEquals(1.236d, result.get(0).doubleValue(), 0.00001);
+		assertEquals(1.236d, result.get(0).doubleValue(), 0.01);
 	}
 
 	@Test
@@ -67,7 +67,7 @@ public class ChartDataAggregatorTest {
 		raw.put(0, list);
 		final Map<Integer, Double> result = aggregator.aggregateToSum(raw, t -> Double.valueOf(t.getDistance()));
 
-		assertEquals(3.704d, result.get(0).doubleValue(), 0.00001);
+		assertEquals(3.704d, result.get(0).doubleValue(), 0.01);
 	}
 
 	@Test
@@ -93,8 +93,8 @@ public class ChartDataAggregatorTest {
 
 		final Map<Integer, Double> result = aggregator.aggregateToSum(raw, f);
 
-		assertEquals(3.704d, result.get(0).doubleValue(), 0.00001);
-		assertEquals(9.704d, result.get(1).doubleValue(), 0.00001);
+		assertEquals(3.704d, result.get(0).doubleValue(), 0.01);
+		assertEquals(9.704d, result.get(1).doubleValue(), 0.01);
 	}
 
 	@Test

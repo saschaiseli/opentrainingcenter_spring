@@ -1,12 +1,10 @@
 package ch.opentrainingcenter.gui.view;
 
 import java.awt.Color;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.Map;
 
 import com.byteowls.vaadin.chartjs.ChartJs;
-import com.byteowls.vaadin.chartjs.config.LineChartConfig;
+import com.byteowls.vaadin.chartjs.options.Position;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -17,22 +15,21 @@ import com.vaadin.ui.VerticalLayout;
 import ch.opentrainingcenter.business.service.TrainingService;
 import ch.opentrainingcenter.business.service.chart.LineChartDataService;
 import ch.opentrainingcenter.business.util.DateUtil;
+import ch.opentrainingcenter.gui.chart.LineChartComponent;
 import ch.opentrainingcenter.gui.model.GExtendedTraining;
 import ch.opentrainingcenter.gui.model.GSimpleTraining;
-import ch.opentrainingcenter.gui.model.chart.ChartJsComponent;
 
 @SuppressWarnings("serial")
 public class DetailPanel extends Panel {
-
 	private final LineChartDataService dataService;
 
-	private final GExtendedTraining training;
+	private final GExtendedTraining tr;
 
 	public DetailPanel(final GSimpleTraining training, final TrainingService service,
 			final LineChartDataService dataService) {
 		super(String.format("Training vom %s", DateUtil.format(new Date(training.getId()))));
 		this.dataService = dataService;
-		this.training = service.findById(training.getId());
+		this.tr = service.findById(training.getId());
 		init();
 	}
 
@@ -45,19 +42,19 @@ public class DetailPanel extends Panel {
 		grid.addStyleName("outlined");
 		grid.setSizeFull();
 
-		final GSimpleTraining st = training.getSimpleTraininig();
+		final GSimpleTraining st = tr.getSimpleTraininig();
 		grid.addComponent(createCellContent("Distanz", st.getDistance()));
 		grid.addComponent(createCellContent("Zeit", st.getDuration()));
 		grid.addComponent(createCellContent("Pace", st.getPace()));
-		grid.addComponent(createCellContent("max Pace", training.getMaxSpeed()));
+		grid.addComponent(createCellContent("max Pace", tr.getMaxSpeed()));
 
 		grid.addComponent(createCellContent("max Herzfrequenz", String.valueOf(st.getMaxHeartBeat())));
 		grid.addComponent(createCellContent("avg. Herzfrequenz", String.valueOf(st.getAverageHeartBeat())));
 		grid.addComponent(createCellContent("Trainingseffekt", st.getTrainingEffect().toString()));
 
-		grid.addComponent(createCellContent("Positive Höhenmeter", training.getUp()));
-		grid.addComponent(createCellContent("Negative Höhenmeter", training.getDown()));
-		grid.addComponent(createCellContent("Qualität GPS", training.getQuality()));
+		grid.addComponent(createCellContent("Positive Höhenmeter", tr.getUp()));
+		grid.addComponent(createCellContent("Negative Höhenmeter", tr.getDown()));
+		grid.addComponent(createCellContent("Qualität GPS", tr.getQuality()));
 
 		l1.addComponent(grid);
 		root.addComponent(l1);
@@ -66,12 +63,16 @@ public class DetailPanel extends Panel {
 		l2.setSizeFull();
 		l2.setMargin(true);
 
-		final Panel heartPanel = new Panel("Herz");
+		final Panel heartPanel = new Panel("Herzfrequenz");
+		final LineChartComponent lcc = new LineChartComponent();
 
-		final ChartJsComponent heart = new ChartJsComponent("Schnabber", Color.GRAY, Color.GREEN);
-		final Map<Double, Integer> data = dataService.getValues(training.getTrackPoints(), p -> p.getHeartbeat());
-		final LineChartConfig lineChartConfig = heart.createConfig2(data, ChronoUnit.FOREVER);
-		final ChartJs chart = heart.createChart(lineChartConfig);
+		lcc.addLine(dataService.getValues(tr.getTrackPoints(), p -> Double.valueOf(p.getHeartbeat())), "Herzfrequenz",
+				Position.RIGHT, Color.RED, Color.RED);
+
+		lcc.addLine(dataService.getValues(tr.getTrackPoints(), p -> Double.valueOf(p.getAltitude())), "Höhe",
+				Position.LEFT, Color.BLUE, Color.BLUE);
+
+		final ChartJs chart = new ChartJs(lcc.getConfig());
 		chart.setSizeFull();
 		heartPanel.setContent(chart);
 		l2.addComponent(heartPanel);

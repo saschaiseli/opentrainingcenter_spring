@@ -12,8 +12,9 @@ import ch.opentrainingcenter.gui.model.GTrackPoint;
 @Service
 public class LineChartDataService {
 
-	public Map<Double, Integer> getValues(final List<GTrackPoint> points,
-			final Function<GTrackPoint, Integer> function) {
-		return points.stream().collect(Collectors.toMap(GTrackPoint::getDistance, function, (k1, k2) -> k1));
+	public Map<Integer, Double> getValues(final List<GTrackPoint> points,
+			final Function<GTrackPoint, Double> function) {
+		return points.stream()
+				.collect(Collectors.toMap((final GTrackPoint g) -> (int) g.getDistance(), function, (k1, k2) -> k1));
 	}
 }

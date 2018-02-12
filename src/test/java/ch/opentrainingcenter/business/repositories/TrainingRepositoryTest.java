@@ -51,9 +51,7 @@ public class TrainingRepositoryTest {
 		athlete.setMaxHeartRate(195);
 		athlete.setLocaleString("DE");
 		Athlete athleteFromDb = athleteRepo.findByEmail(EMAIL);
-		if (athleteFromDb == null) {
-			athleteFromDb = athleteRepo.save(athlete);
-		}
+		athleteFromDb = athleteRepo.save(athlete);
 
 		final RunData runData = new RunData(now, 102, 1234, 4.5);
 		final HeartRate heart = new HeartRate(120, 180);
@@ -66,6 +64,7 @@ public class TrainingRepositoryTest {
 	@After
 	public void cleanUp() {
 		repo.delete(training);
+		athleteRepo.delete(athlete);
 	}
 
 	@Test
