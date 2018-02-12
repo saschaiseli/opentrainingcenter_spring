@@ -9,13 +9,13 @@ public class DistanceUtilTest {
 	@Test
 	public void testConvert() {
 		final String roundDistance = DistanceUtil.roundDistanceFromMeterToKmMitEinheit(10123.4567890);
-		assertEquals("10.123km", roundDistance);
+		assertEquals("10.123 km", roundDistance);
 	}
 
 	@Test
 	public void testConvertLessZeros() {
 		final String roundDistance = DistanceUtil.roundDistanceFromMeterToKmMitEinheit(0.0);
-		assertEquals("0.000km", roundDistance);
+		assertEquals("0.000 km", roundDistance);
 	}
 
 	@Test
@@ -27,19 +27,19 @@ public class DistanceUtilTest {
 	@Test
 	public void testConvertBig() {
 		final String roundDistance = DistanceUtil.roundDistanceFromMeterToKmMitEinheit(10123456.7890);
-		assertEquals("10123.457km", roundDistance);
+		assertEquals("10123.457 km", roundDistance);
 	}
 
 	@Test
 	public void testConvertSmall() {
 		final String roundDistance = DistanceUtil.roundDistanceFromMeterToKmMitEinheit(12.34567890);
-		assertEquals("0.012km", roundDistance);
+		assertEquals("0.012 km", roundDistance);
 	}
 
 	@Test
 	public void testConvertSmallRoundUp() {
 		final String roundDistance = DistanceUtil.roundDistanceFromMeterToKmMitEinheit(12.64567890);
-		assertEquals("0.013km", roundDistance);
+		assertEquals("0.013 km", roundDistance);
 	}
 
 	@Test

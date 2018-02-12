@@ -23,7 +23,9 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 import ch.opentrainingcenter.business.service.TrainingService;
-import ch.opentrainingcenter.gui.component.ChartKachelComponent;
+import ch.opentrainingcenter.gui.component.AbstractChartKachelComponent;
+import ch.opentrainingcenter.gui.component.BarChartKachelComponent;
+import ch.opentrainingcenter.gui.component.LineChartKachelComponent;
 
 @SuppressWarnings("serial")
 @Secured({ "ROLE_ADMIN" })
@@ -38,7 +40,7 @@ public class DashboardView extends VerticalLayout implements View, EventBusListe
 	@Autowired
 	private EventBus.UIEventBus eventBus;
 
-	private final List<ChartKachelComponent> kacheln = new ArrayList<>();
+	private final List<AbstractChartKachelComponent> kacheln = new ArrayList<>();
 
 	@PostConstruct
 	public void init() {
@@ -59,12 +61,14 @@ public class DashboardView extends VerticalLayout implements View, EventBusListe
 
 		Responsive.makeResponsive(sparks);
 
-		kacheln.add(new ChartKachelComponent(service, email, ChronoUnit.WEEKS, 8));
-		kacheln.add(new ChartKachelComponent(service, email, ChronoUnit.MONTHS, 4));
-		kacheln.add(new ChartKachelComponent(service, email, ChronoUnit.YEARS, 3));
+		kacheln.add(new BarChartKachelComponent(service, email, ChronoUnit.WEEKS, 8));
+		kacheln.add(new BarChartKachelComponent(service, email, ChronoUnit.MONTHS, 4));
+		kacheln.add(new BarChartKachelComponent(service, email, ChronoUnit.YEARS, 3));
+		kacheln.add(new LineChartKachelComponent(service, email, ChronoUnit.WEEKS, 8));
+		kacheln.add(new LineChartKachelComponent(service, email, ChronoUnit.MONTHS, 4));
+		kacheln.add(new LineChartKachelComponent(service, email, ChronoUnit.YEARS, 3));
 
 		kacheln.forEach(k -> sparks.addComponent(k));
-
 		return sparks;
 	}
 

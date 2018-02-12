@@ -1,14 +1,16 @@
 pipeline {
   agent {
     docker {
-      image 'maven:latest'
+      image 'maven:3.5-jdk-8'
     }
     
   }
   stages {
     stage('Test') {
       steps {
-        sh 'mvn clean compile test'
+        sh 'mvn clean test -Drun.profiles=test'
+        archive "target/**/*"
+        junit 'target/surefire-reports/*.xml'
       }
     }
     stage('Package') {

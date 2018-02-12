@@ -18,6 +18,7 @@ import ch.opentrainingcenter.business.util.DateUtil;
 @Service
 @Secured("ROLE_ADMIN")
 public class ChartIndexCompleteService {
+
 	public Map<Integer, Double> fill(final Map<Integer, Double> raw, final ChronoUnit unit, final LocalDate now,
 			final int size) {
 		LocalDateTime ldt = LocalDateTime.of(now, LocalTime.of(0, 0));

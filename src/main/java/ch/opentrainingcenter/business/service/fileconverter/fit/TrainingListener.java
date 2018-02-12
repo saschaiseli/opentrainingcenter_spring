@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.garmin.fit.LapMesg;
 import com.garmin.fit.Mesg;
 import com.garmin.fit.MesgListener;
@@ -20,6 +23,8 @@ import ch.opentrainingcenter.business.domain.Training;
 
 public class TrainingListener implements MesgListener {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(TrainingListener.class);
+
 	private static final String RECORD = "record"; //$NON-NLS-1$
 	private static final String SESSION = "session"; //$NON-NLS-1$
 	private static final String LAP = "lap"; //$NON-NLS-1$
@@ -34,6 +39,7 @@ public class TrainingListener implements MesgListener {
 	@Override
 	public void onMesg(final Mesg mesg) {
 		final String messageName = mesg.getName();
+		LOGGER.info("Message: " + messageName);
 		if (RECORD.equals(messageName)) {
 			trackpoints.add(convertTrackPoint(new RecordMesg(mesg)));
 		} else if (SESSION.equals(messageName)) {

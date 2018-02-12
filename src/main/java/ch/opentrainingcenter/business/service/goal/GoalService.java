@@ -32,12 +32,9 @@ public class GoalService {
 	private RuleToEntity mapToEntity;
 
 	public GoalService() {
-		// SecurityContextHolder.getContext().getAuthentication().getName();
 	}
 
 	public List<GRule> getRulesByUser(final String email) {
-		// final String email = (String)
-		// SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		final Athlete athlete = athleteRepo.findByEmail(email);
 		final List<Rule> rules = ruleRepo.findByAthlete(athlete);
 		return rules.stream().map(t -> mapToGObject.convert(t)).collect(Collectors.toList());

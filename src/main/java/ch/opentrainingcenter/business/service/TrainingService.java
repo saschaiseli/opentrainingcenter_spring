@@ -57,7 +57,7 @@ public class TrainingService {
 		final List<GSimpleTraining> trainings = repo.findSimpleTrainingByEmailAndStartDate(email, milliStart);
 		final Map<Integer, List<GSimpleTraining>> aggregateToIndex = aggregator.aggregateToIndex(trainings, unit);
 		final Map<Integer, Double> raw = aggregator.aggregateToSum(aggregateToIndex,
-				t -> Double.valueOf(t.getLaengeInMeter()).doubleValue() / 1000);
+				t -> (Math.round(t.getLaengeInMeter() * 100) / 100) / 1000d);
 		return completeService.fill(raw, unit, now, size);
 	}
 
