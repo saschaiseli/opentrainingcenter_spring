@@ -1,6 +1,5 @@
 package ch.opentrainingcenter.gui.component;
 
-import java.awt.Color;
 import java.text.DateFormatSymbols;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -10,27 +9,26 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.byteowls.vaadin.chartjs.ChartJs;
-import com.byteowls.vaadin.chartjs.data.LineDataset;
-import com.byteowls.vaadin.chartjs.options.Position;
+import com.byteowls.vaadin.chartjs.config.ChartConfig;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 import ch.opentrainingcenter.business.service.TrainingService;
-import ch.opentrainingcenter.gui.chart.LineChartComponent;
 
 @SuppressWarnings("serial")
-public class ChartKachelComponentNG extends VerticalLayout {
-	private final ChronoUnit unit;
+public abstract class AbstractChartKachelComponent extends VerticalLayout {
+	final ChronoUnit unit;
 	private final Label currentValue;
 	private final ChartJs chart;
 	private final LocalDate now;
 	private final TrainingService service;
 	private final String email;
 	private final int size;
+	private final Label currentValueLabel;
 
-	public ChartKachelComponentNG(final TrainingService service, final String email, final ChronoUnit unit,
+	public AbstractChartKachelComponent(final TrainingService service, final String email, final ChronoUnit unit,
 			final int size) {
 		this.service = service;
 		this.email = email;
@@ -38,44 +36,41 @@ public class ChartKachelComponentNG extends VerticalLayout {
 		this.size = size;
 
 		setSizeUndefined();
-		setWidth("100%");
+		addStyleName("spark");
 		setMargin(false);
 		setSpacing(false);
 		setDefaultComponentAlignment(Alignment.TOP_CENTER);
 
-		currentValue = new Label();
+		currentValue = new Label("km pro " + unit);
 		currentValue.setSizeUndefined();
 		currentValue.addStyleName(ValoTheme.LABEL_HUGE);
 		addComponent(currentValue);
 
-		final Label l = new Label("aktuell");
-		l.setSizeUndefined();
-		l.addStyleName(ValoTheme.LABEL_SMALL);
-		l.addStyleName(ValoTheme.LABEL_LIGHT);
-		addComponent(l);
+		currentValueLabel = new Label();
+		currentValueLabel.setSizeUndefined();
+		currentValueLabel.addStyleName(ValoTheme.LABEL_SMALL);
+		currentValueLabel.addStyleName(ValoTheme.LABEL_LIGHT);
+		addComponent(currentValueLabel);
 		now = LocalDate.now();
 		final Map<Integer, Double> data = service.findByEmailAndDate(email, unit, size, now);
 		final List<String> yAxis = createYAxis(data, unit);
-		final LineChartComponent lcc = createLineChartComponent(data, yAxis);
-		chart = new ChartJs(lcc.getConfig());
+
+		final ChartConfig chartConfig = getChartConfig(data, yAxis, currentValueLabel);
+		chart = new ChartJs(chartConfig);
+		chart.setHeight("200px");
 
 		addComponent(chart);
 	}
 
+	public abstract ChartConfig getChartConfig(final Map<Integer, Double> data, final List<String> yAxis,
+			final Label label);
+
 	public void update() {
 		final Map<Integer, Double> data = service.findByEmailAndDate(email, unit, size, now);
 		final List<String> yAxis = createYAxis(data, unit);
-		final LineChartComponent lcc = createLineChartComponent(data, yAxis);
-		chart.configure(lcc.getConfig());
+		final ChartConfig chartConfig = getChartConfig(data, yAxis, currentValueLabel);
+		chart.configure(chartConfig);
 		chart.refreshData();
-	}
-
-	private LineChartComponent createLineChartComponent(final Map<Integer, Double> data, final List<String> yAxis) {
-		final LineChartComponent lcc = new LineChartComponent();
-		final LineDataset line = lcc.addLine(data, getChartLabel(unit), Position.TOP, Color.BLUE, Color.CYAN);
-		line.pointRadius(2).pointHoverRadius(4).borderWidth(2).pointBorderWidth(1);
-		lcc.getConfig().data().labels(yAxis.toArray(new String[1]));
-		return lcc;
 	}
 
 	private List<String> createYAxis(final Map<Integer, Double> data, final ChronoUnit unit) {
@@ -95,7 +90,7 @@ public class ChartKachelComponentNG extends VerticalLayout {
 		return yAxis;
 	}
 
-	private String getChartLabel(final ChronoUnit unit) {
+	String getChartLabel(final ChronoUnit unit) {
 		switch (unit) {
 		case WEEKS:
 			return "km/Woche";
