@@ -28,15 +28,15 @@ import ch.opentrainingcenter.gui.model.GSimpleTraining;
 @ActiveProfiles("test")
 @PropertySource("classpath:application-test.properties")
 @SpringBootTest(classes = { AppConfig.class })
-public class TrainingRepositoryTest {
+public class TrainingRepositoryTestIT {
 
 	private static final String EMAIL = "email@test.ch";
 
 	@Autowired
-	private TrainingRepository repo;
+	private TrainingRepo repo;
 
 	@Autowired
-	private AthleteRepository athleteRepo;
+	private AthleteRepo athleteRepo;
 
 	private Athlete athlete;
 

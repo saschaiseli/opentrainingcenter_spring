@@ -14,14 +14,14 @@ import ch.opentrainingcenter.business.domain.Rule;
 import ch.opentrainingcenter.business.domain.Section;
 import ch.opentrainingcenter.business.domain.Unit;
 import ch.opentrainingcenter.business.mapper.toGobject.RuleToGObject;
-import ch.opentrainingcenter.business.repositories.AthleteRepository;
+import ch.opentrainingcenter.business.repositories.AthleteRepo;
 import ch.opentrainingcenter.business.repositories.RuleRepo;
 import ch.opentrainingcenter.gui.model.GRule;
 
 public class GoalServiceTest {
 	GoalService service;
 	private RuleRepo ruleRepo;
-	private AthleteRepository athleteRepo;
+	private AthleteRepo athleteRepo;
 	private Athlete athlete;
 
 	@Before
@@ -29,7 +29,7 @@ public class GoalServiceTest {
 		service = new GoalService();
 		ruleRepo = Mockito.mock(RuleRepo.class);
 		service.setRuleRepo(ruleRepo);
-		athleteRepo = Mockito.mock(AthleteRepository.class);
+		athleteRepo = Mockito.mock(AthleteRepo.class);
 		service.setAthleteRepository(athleteRepo);
 		service.setRuleToGObject(new RuleToGObject());
 		athlete = new Athlete();

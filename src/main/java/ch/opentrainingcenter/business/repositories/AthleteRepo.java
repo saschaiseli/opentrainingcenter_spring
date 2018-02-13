@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import ch.opentrainingcenter.business.domain.Athlete;
 
-public interface AthleteRepository extends JpaRepository<Athlete, Long> {
+public interface AthleteRepo extends JpaRepository<Athlete, Long> {
 
 	Athlete findByEmailAndPassword(String email, String password);
 

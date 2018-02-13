@@ -33,7 +33,7 @@ import ch.opentrainingcenter.gui.component.LineChartKachelComponent;
 public class DashboardView extends VerticalLayout implements View, EventBusListener<Object> {
 
 	@Autowired
-	private TrainingService service;
+	private TrainingService trService;
 
 	public static final String VIEW_NAME = "Dashboard";
 
@@ -61,12 +61,12 @@ public class DashboardView extends VerticalLayout implements View, EventBusListe
 
 		Responsive.makeResponsive(sparks);
 
-		kacheln.add(new BarChartKachelComponent(service, email, ChronoUnit.WEEKS, 8));
-		kacheln.add(new BarChartKachelComponent(service, email, ChronoUnit.MONTHS, 4));
-		kacheln.add(new BarChartKachelComponent(service, email, ChronoUnit.YEARS, 3));
-		kacheln.add(new LineChartKachelComponent(service, email, ChronoUnit.WEEKS, 8));
-		kacheln.add(new LineChartKachelComponent(service, email, ChronoUnit.MONTHS, 4));
-		kacheln.add(new LineChartKachelComponent(service, email, ChronoUnit.YEARS, 3));
+		kacheln.add(new BarChartKachelComponent(trService, email, ChronoUnit.WEEKS, 8));
+		kacheln.add(new BarChartKachelComponent(trService, email, ChronoUnit.MONTHS, 4));
+		kacheln.add(new BarChartKachelComponent(trService, email, ChronoUnit.YEARS, 3));
+		kacheln.add(new LineChartKachelComponent(trService, email, ChronoUnit.WEEKS, 8));
+		kacheln.add(new LineChartKachelComponent(trService, email, ChronoUnit.MONTHS, 4));
+		kacheln.add(new LineChartKachelComponent(trService, email, ChronoUnit.YEARS, 3));
 
 		kacheln.forEach(k -> sparks.addComponent(k));
 		return sparks;

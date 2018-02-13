@@ -11,7 +11,7 @@ import ch.opentrainingcenter.business.domain.Athlete;
 import ch.opentrainingcenter.business.domain.Rule;
 import ch.opentrainingcenter.business.mapper.toEntity.RuleToEntity;
 import ch.opentrainingcenter.business.mapper.toGobject.RuleToGObject;
-import ch.opentrainingcenter.business.repositories.AthleteRepository;
+import ch.opentrainingcenter.business.repositories.AthleteRepo;
 import ch.opentrainingcenter.business.repositories.RuleRepo;
 import ch.opentrainingcenter.gui.model.GRule;
 
@@ -20,7 +20,7 @@ import ch.opentrainingcenter.gui.model.GRule;
 public class GoalService {
 
 	@Autowired
-	private AthleteRepository athleteRepo;
+	private AthleteRepo athleteRepo;
 
 	@Autowired
 	private RuleRepo ruleRepo;
@@ -68,7 +68,7 @@ public class GoalService {
 	/**
 	 * 4 Tests
 	 */
-	protected void setAthleteRepository(final AthleteRepository athleteRepo) {
+	protected void setAthleteRepository(final AthleteRepo athleteRepo) {
 		this.athleteRepo = athleteRepo;
 	}
 

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import com.byteowls.vaadin.chartjs.config.ChartConfig;
 import com.byteowls.vaadin.chartjs.config.LineChartConfig;
@@ -14,6 +15,7 @@ import com.vaadin.ui.Label;
 
 import ch.opentrainingcenter.business.service.TrainingService;
 import ch.opentrainingcenter.gui.chart.LineChartComponent;
+import ch.opentrainingcenter.gui.model.GRule;
 
 @SuppressWarnings("serial")
 public class LineChartKachelComponent extends AbstractChartKachelComponent {
@@ -24,7 +26,8 @@ public class LineChartKachelComponent extends AbstractChartKachelComponent {
 	}
 
 	@Override
-	public ChartConfig getChartConfig(final Map<Integer, Double> data, final List<String> yAxis, final Label label) {
+	public ChartConfig getChartConfig(final Map<Integer, Double> data, final List<String> yAxis, final Label label,
+			final Optional<GRule> rule) {
 		final LineChartComponent lcc = createLineChartComponent(data, yAxis);
 		final Data<LineChartConfig> barData = lcc.getConfig().data();
 		final List<?> datas = barData.getDatasetAtIndex(0).getData();

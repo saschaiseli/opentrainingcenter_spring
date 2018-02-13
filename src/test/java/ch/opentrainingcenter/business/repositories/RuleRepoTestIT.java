@@ -24,12 +24,12 @@ import ch.opentrainingcenter.business.domain.Unit;
 @ActiveProfiles("test")
 @PropertySource("classpath:application-test.properties")
 @SpringBootTest(classes = { AppConfig.class })
-public class RuleRepoTest {
+public class RuleRepoTestIT {
 
 	@Autowired
 	private RuleRepo ruleRepo;
 	@Autowired
-	private AthleteRepository athleteRepo;
+	private AthleteRepo athleteRepo;
 	private Athlete athlete;
 	private final String EMAIL = "junit@test.ch";
 

@@ -16,8 +16,8 @@ import org.springframework.stereotype.Service;
 
 import ch.opentrainingcenter.business.domain.Athlete;
 import ch.opentrainingcenter.business.domain.Training;
-import ch.opentrainingcenter.business.repositories.AthleteRepository;
-import ch.opentrainingcenter.business.repositories.TrainingRepository;
+import ch.opentrainingcenter.business.repositories.AthleteRepo;
+import ch.opentrainingcenter.business.repositories.TrainingRepo;
 import ch.opentrainingcenter.business.service.fileconverter.FileConvertException;
 import ch.opentrainingcenter.business.service.fileconverter.fit.FitFileConverter;
 
@@ -30,10 +30,10 @@ public class FileUploadHandlerService {
 	private FitFileConverter converter;
 
 	@Autowired
-	TrainingRepository repository;
+	TrainingRepo repository;
 
 	@Autowired
-	AthleteRepository athleteRepository;
+	AthleteRepo athleteRepository;
 
 	public void handleFile(final Path path) throws FileConvertException {
 		LOGGER.info("Handle file....");

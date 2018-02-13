@@ -15,7 +15,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
 import ch.opentrainingcenter.business.domain.Athlete;
-import ch.opentrainingcenter.business.repositories.AthleteRepository;
+import ch.opentrainingcenter.business.repositories.AthleteRepo;
 
 @Secured({ "ROLE_ADMIN" })
 @SpringView(name = AdminView.VIEW_NAME)
@@ -26,7 +26,7 @@ public class AdminView extends VerticalLayout implements View {
 	public static final String VIEW_NAME = "admin";
 
 	@Autowired
-	AthleteRepository repo;
+	AthleteRepo repo;
 
 	@PostConstruct
 	public void init() {

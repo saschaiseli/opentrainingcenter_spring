@@ -9,13 +9,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import ch.opentrainingcenter.business.domain.Athlete;
-import ch.opentrainingcenter.business.repositories.AthleteRepository;
+import ch.opentrainingcenter.business.repositories.AthleteRepo;
 
 @Service(value = "AthleteDetailService")
 public class AthleteDetailService implements UserDetailsService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AthleteDetailService.class);
 	@Autowired
-	private AthleteRepository athleteRepository;
+	private AthleteRepo athleteRepository;
 
 	@Override
 	public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {

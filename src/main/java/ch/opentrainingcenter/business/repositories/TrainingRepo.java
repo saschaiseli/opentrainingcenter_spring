@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import ch.opentrainingcenter.business.domain.Training;
 import ch.opentrainingcenter.gui.model.GSimpleTraining;
 
-public interface TrainingRepository extends JpaRepository<Training, Long> {
+public interface TrainingRepo extends JpaRepository<Training, Long> {
 
 	public List<GSimpleTraining> findSimpleTrainingByEmail(String email);
 

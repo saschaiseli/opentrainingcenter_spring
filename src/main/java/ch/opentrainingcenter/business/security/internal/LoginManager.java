@@ -13,7 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import ch.opentrainingcenter.business.domain.Athlete;
-import ch.opentrainingcenter.business.repositories.AthleteRepository;
+import ch.opentrainingcenter.business.repositories.AthleteRepo;
 import ch.opentrainingcenter.business.security.ILoginManager;
 
 @Service
@@ -22,7 +22,7 @@ public class LoginManager implements ILoginManager {
 	private AuthenticationManager authenticationManager;
 
 	@Autowired
-	private AthleteRepository athleteRepo;
+	private AthleteRepo athleteRepo;
 
 	@Autowired
 	@Qualifier(value = "AthleteDetailService")

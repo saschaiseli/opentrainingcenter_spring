@@ -12,7 +12,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 
 import ch.opentrainingcenter.business.domain.Athlete;
-import ch.opentrainingcenter.business.repositories.AthleteRepository;
+import ch.opentrainingcenter.business.repositories.AthleteRepo;
 
 @Profile("!prod")
 @Primary
@@ -20,7 +20,7 @@ import ch.opentrainingcenter.business.repositories.AthleteRepository;
 public class AuthenticationProviderMock implements AuthenticationProvider {
 
 	@Autowired
-	private AthleteRepository athleteRepo;
+	private AthleteRepo athleteRepo;
 
 	@Override
 	public Authentication authenticate(final Authentication authentication) throws AuthenticationException {

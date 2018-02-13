@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -16,6 +17,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 import ch.opentrainingcenter.business.service.TrainingService;
+import ch.opentrainingcenter.gui.model.GRule;
 
 @SuppressWarnings("serial")
 public abstract class AbstractChartKachelComponent extends VerticalLayout {
@@ -53,9 +55,11 @@ public abstract class AbstractChartKachelComponent extends VerticalLayout {
 		addComponent(currentValueLabel);
 		now = LocalDate.now();
 		final Map<Integer, Double> data = service.findByEmailAndDate(email, unit, size, now);
+
 		final List<String> yAxis = createYAxis(data, unit);
 
-		final ChartConfig chartConfig = getChartConfig(data, yAxis, currentValueLabel);
+		final Optional<GRule> rule = service.findGoal(email, unit);
+		final ChartConfig chartConfig = getChartConfig(data, yAxis, currentValueLabel, rule);
 		chart = new ChartJs(chartConfig);
 		chart.setHeight("200px");
 
@@ -63,12 +67,13 @@ public abstract class AbstractChartKachelComponent extends VerticalLayout {
 	}
 
 	public abstract ChartConfig getChartConfig(final Map<Integer, Double> data, final List<String> yAxis,
-			final Label label);
+			final Label label, final Optional<GRule> rule);
 
 	public void update() {
 		final Map<Integer, Double> data = service.findByEmailAndDate(email, unit, size, now);
 		final List<String> yAxis = createYAxis(data, unit);
-		final ChartConfig chartConfig = getChartConfig(data, yAxis, currentValueLabel);
+		final Optional<GRule> rule = service.findGoal(email, unit);
+		final ChartConfig chartConfig = getChartConfig(data, yAxis, currentValueLabel, rule);
 		chart.configure(chartConfig);
 		chart.refreshData();
 	}
