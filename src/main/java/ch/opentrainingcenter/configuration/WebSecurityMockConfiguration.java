@@ -28,7 +28,7 @@ import com.vaadin.spring.annotation.EnableVaadin;
 
 import ch.opentrainingcenter.business.security.AuthenticationProviderMock;
 
-@Profile("!prod")
+@Profile("dev")
 @Configuration
 @EnableVaadin
 @EnableWebSecurity
