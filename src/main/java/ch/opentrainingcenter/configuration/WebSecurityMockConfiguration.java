@@ -43,12 +43,6 @@ public class WebSecurityMockConfiguration extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private AuthenticationProviderMock mock;
 
-	public WebSecurityMockConfiguration() {
-		LOGGER.info("******************************************************************************************");
-		LOGGER.info("******************** DEV MODE *****************************************************");
-		LOGGER.info("******************************************************************************************");
-	}
-
 	@Override
 	protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
 		auth.authenticationProvider(mock);

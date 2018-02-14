@@ -45,12 +45,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private AthleteDetailService athleteDetailService;
 
-	public WebSecurityConfiguration() {
-		LOGGER.info("******************************************************************************************");
-		LOGGER.info("******************** PRODUCTION MODE *****************************************************");
-		LOGGER.info("******************************************************************************************");
-	}
-
 	@Autowired
 	public void configureGlobal(final AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(athleteDetailService);
