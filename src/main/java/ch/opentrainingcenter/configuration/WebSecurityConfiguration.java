@@ -1,5 +1,7 @@
 package ch.opentrainingcenter.configuration;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -39,9 +41,15 @@ import ch.opentrainingcenter.business.service.AthleteDetailService;
 @EnableJpaAuditing
 @ComponentScan
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
-
+	private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfiguration.class);
 	@Autowired
 	private AthleteDetailService athleteDetailService;
+
+	public WebSecurityConfiguration() {
+		LOGGER.info("******************************************************************************************");
+		LOGGER.info("******************** PRODUCTION MODE *****************************************************");
+		LOGGER.info("******************************************************************************************");
+	}
 
 	@Autowired
 	public void configureGlobal(final AuthenticationManagerBuilder auth) throws Exception {
@@ -50,6 +58,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(final HttpSecurity http) throws Exception {
+		LOGGER.info("******************************************************************************************");
+		LOGGER.info("******************** PRODUCTION MODE *****************************************************");
+		LOGGER.info("******************************************************************************************");
 		http.authorizeRequests().antMatchers("/THEME", "/VAADIN/**", "/PUSH/**", "/UIDL/**", "/statistic", "/login",
 				"/error/**", "/accessDenied/**", "/vaadinServlet/**").permitAll();
 

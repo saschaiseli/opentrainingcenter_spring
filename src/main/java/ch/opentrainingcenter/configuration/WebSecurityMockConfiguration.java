@@ -1,5 +1,7 @@
 package ch.opentrainingcenter.configuration;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -26,7 +28,7 @@ import com.vaadin.spring.annotation.EnableVaadin;
 
 import ch.opentrainingcenter.business.security.AuthenticationProviderMock;
 
-@Profile("dev")
+@Profile("!prod")
 @Configuration
 @EnableVaadin
 @EnableWebSecurity
@@ -35,8 +37,17 @@ import ch.opentrainingcenter.business.security.AuthenticationProviderMock;
 @EnableJpaAuditing
 @ComponentScan
 public class WebSecurityMockConfiguration extends WebSecurityConfigurerAdapter {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityMockConfiguration.class);
+
 	@Autowired
 	private AuthenticationProviderMock mock;
+
+	public WebSecurityMockConfiguration() {
+		LOGGER.info("******************************************************************************************");
+		LOGGER.info("******************** DEV MODE *****************************************************");
+		LOGGER.info("******************************************************************************************");
+	}
 
 	@Override
 	protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
@@ -45,6 +56,10 @@ public class WebSecurityMockConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(final HttpSecurity http) throws Exception {
+		LOGGER.info("******************************************************************************************");
+		LOGGER.info("******************** DEV MODE *****************************************************");
+		LOGGER.info("******************************************************************************************");
+
 		http.authorizeRequests().antMatchers("/THEME", "/VAADIN/**", "/PUSH/**", "/UIDL/**", "/statistic", "/login",
 				"/error/**", "/accessDenied/**", "/vaadinServlet/**").permitAll();
 
