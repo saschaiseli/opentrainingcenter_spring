@@ -9,13 +9,13 @@ import ch.opentrainingcenter.gui.model.GSimpleTraining;
 
 public interface TrainingRepo extends JpaRepository<Training, Long> {
 
-	public List<GSimpleTraining> findSimpleTrainingByEmail(String email);
+	List<GSimpleTraining> findSimpleTrainingByEmail(String email);
 
-	public List<Training> findTrainingByEmail(String email);
+	List<Training> findTrainingByEmail(String email);
 
-	public List<GSimpleTraining> findSimpleTrainingByEmailAndStartDate(String email, long milliStart);
+	List<GSimpleTraining> findSimpleTrainingByEmailAndStartDate(String email, long milliStart);
 
-	public int countByAthleteEmail(String email);
+	int countByAthleteEmail(String email);
 
-	public Training findTrainingById(long id);
+	Training findTrainingById(long id);
 }

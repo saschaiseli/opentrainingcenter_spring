@@ -20,7 +20,7 @@ public class CustomTrainingRepoImpl implements CustomTrainingRepository {
 
 	@Override
 	public void findSimpleTrainingByEmailAndPeriod(final String email, final LocalDate start, final LocalDate now) {
-		LOGGER.info("findSimpleTrainingByEmailAndPeriod");
+		LOGGER.info("x");
 		final String sql = "";
 		final Query query = em.createQuery(sql);
 		query.getResultList();

@@ -44,12 +44,16 @@ public class BarChartComponent {
 		final Scales<BarChartOptions> scales = barConfig.data().addDataset(lds.label(label).yAxisID(label))//
 				.and().options().responsive(true).title().and().tooltips().mode(InteractionMode.INDEX).intersect(false)
 				.and().hover().mode(InteractionMode.NEAREST).intersect(true).and().scales()
-				.add(Axis.Y, new LinearScale().display(true).scaleLabel().display(true).labelString("").and().ticks()
-						.suggestedMin(min).suggestedMax(max).and().position(pos).id(label));
+				.add(Axis.Y, new LinearScale().barPercentage(1).display(true).scaleLabel().display(true).labelString("")//
+                        .and().ticks().suggestedMin(min).suggestedMax(max)//
+                        .and().gridLines().offsetGridLines(false)//
+                        .and().position(pos).id(label));
+
 		if (barConfig.data().getLabels() == null) {
 			barConfig.data().labels(
 					sortedKeys.stream().map(String::valueOf).collect(Collectors.toList()).toArray(new String[1]));
-			scales.add(Axis.X, new CategoryScale().display(true).scaleLabel().display(true) //
+			scales.add(Axis.X, new CategoryScale().barPercentage(1).display(true).gridLines().offsetGridLines(false)//
+                    .and().scaleLabel().display(true) //
 					.and().position(Position.TOP));
 		}
 		scales.and().done();
@@ -77,11 +81,15 @@ public class BarChartComponent {
 
 	public LineDataset addSimpleLine(final Map<Integer, Double> lineData, final Color border, final Color back) {
 		final LineDataset dataset = new LineDataset();
-		dataset.type().label("Ziel").borderColor(getColor(border)).pointRadius(0).fill(true).borderWidth(1)
-				.borderDash(10).borderJoinStyle("").spanGaps(true).steppedLine(true);
+		dataset.type().label("Ziel").borderColor(getColor(border)).backgroundColor(getColor(back)).pointRadius(0).fill(false).borderWidth(1)
+				.lineTension(1).spanGaps(true).steppedLine(true);
 		dataset.dataAsList(Arrays.asList(lineData.values().toArray(new Double[1])));
-		barConfig.data().addDataset(dataset).and().options().elements().line().borderJoinStyle(JoinStyle.BEVEL).and()
+		barConfig.data().addDataset(dataset).and().options()//
+				.scales()//
+                .add(Axis.X, new LinearScale().display(false).gridLines().drawTicks(true).offsetGridLines(true).and().categoryPercentage(1)).and()//
+				.elements().line().borderJoinStyle(JoinStyle.MITER).and()
 				.and().done();
+
 		return dataset;
 	}
 }

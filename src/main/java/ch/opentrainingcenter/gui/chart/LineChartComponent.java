@@ -30,7 +30,7 @@ public class LineChartComponent {
 		final int max = (int) (statistics.getMax() * 1.05d);
 		final LineDataset lds = new LineDataset();
 		final List<Integer> sortedKeys = data.keySet().stream().sorted().collect(Collectors.toList());
-
+		lds.steppedLine(false).fill(true);
 		final Scales<LineChartOptions> scales = lineConfig.data()
 				.addDataset(lds.label(label).fill(false).yAxisID(label))//
 				.and().options().responsive(true).title().and().tooltips().mode(InteractionMode.INDEX).intersect(false)

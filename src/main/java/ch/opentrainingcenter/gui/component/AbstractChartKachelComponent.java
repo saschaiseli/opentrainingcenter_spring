@@ -62,7 +62,6 @@ public abstract class AbstractChartKachelComponent extends VerticalLayout {
 		final ChartConfig chartConfig = getChartConfig(data, yAxis, currentValueLabel, rule);
 		chart = new ChartJs(chartConfig);
 		chart.setHeight("200px");
-
 		addComponent(chart);
 	}
 
