@@ -11,7 +11,7 @@ public final class CommonTransferFactory {
         return createWeather(9);
     }
 
-    public static Weather createWeather(final int id) {
+    static Weather createWeather(final int id) {
         return new Weather(id);
     }
 
@@ -20,7 +20,7 @@ public final class CommonTransferFactory {
     }
 
     public static Training createTraining(final RunData runData, final HeartRate heart, final double maximumSpeed, final String note, final Weather weather,
-            final Route route) {
+                                          final Route route) {
         return new Training(runData, heart, note, weather, route);
     }
 
@@ -29,35 +29,24 @@ public final class CommonTransferFactory {
     }
 
     /**
-     * @param name
-     *            eindeutiger name der route
-     * @param beschreibung
-     *            beschreibung
-     * @param referenzTraining
-     *            geografische Referenz der Streckenpunkte
-     * @return
+     * @param name             eindeutiger name der route
+     * @param beschreibung     beschreibung
+     * @param referenzTraining geografische Referenz der Streckenpunkte
      */
     public static Route createRoute(final String name, final String beschreibung, final Training referenzTraining) {
         return new Route(name, beschreibung, referenzTraining);
     }
 
     /**
-     * @param distance
-     *            vom Startweg
-     * @param heartbeat
-     *            herzschlag an diesem Punkt
-     * @param altitude
-     *            Höhe in Meter über Meer
-     * @param time
-     *            absolute zeit
-     * @param lap
-     *            Runden nummer
-     * @param longitude
-     * @param latitude
-     * @return {@link ITraining}
+     * @param distance  vom Startweg
+     * @param heartbeat herzschlag an diesem Punkt
+     * @param altitude  Höhe in Meter über Meer
+     * @param time      absolute zeit
+     * @param lap       Runden nummer
+     * @return {@link Tracktrainingproperty}
      */
     public static Tracktrainingproperty createTrackPointProperty(final double distance, final int heartbeat, final int altitude, final long time, final int lap,
-            final Double longitude, final Double latitude) {
+                                                                 final Double longitude, final Double latitude) {
         return new Tracktrainingproperty(distance, heartbeat, altitude, time, lap, longitude, latitude);
     }
 
@@ -75,23 +64,16 @@ public final class CommonTransferFactory {
      *
      * </pre>
      *
-     * @param lap
-     *            Runde [Anzahl]
-     * @param start
-     *            start in Meter [m]
-     * @param end
-     *            ende der runde in [m]
-     * @param time
-     *            Zeit in Millisekunden [ms]
-     * @param heartBeat
-     *            Herzschlag in [Bpm]
-     * @param pace
-     *            Pace in [min/km]
-     * @param geschwindigkeit
-     *            durchschnittliche Geschwindigkeit [km/h]
+     * @param lap             Runde [Anzahl]
+     * @param start           start in Meter [m]
+     * @param end             ende der runde in [m]
+     * @param time            Zeit in Millisekunden [ms]
+     * @param heartBeat       Herzschlag in [Bpm]
+     * @param pace            Pace in [min/km]
+     * @param geschwindigkeit durchschnittliche Geschwindigkeit [km/h]
      */
     public static LapInfo createLapInfo(final int lap, final int start, final int end, final long time, final int heartBeat, final String pace,
-            final String geschwindigkeit) {
+                                        final String geschwindigkeit) {
         return new LapInfo(lap, start, end, time, heartBeat, pace, geschwindigkeit);
     }
 

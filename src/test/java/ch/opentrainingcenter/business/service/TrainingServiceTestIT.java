@@ -1,13 +1,9 @@
 package ch.opentrainingcenter.business.service;
 
-import static org.junit.Assert.assertEquals;
-
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.Map;
-
+import ch.opentrainingcenter.business.domain.*;
+import ch.opentrainingcenter.business.repositories.AppConfig;
+import ch.opentrainingcenter.business.repositories.AthleteRepo;
+import ch.opentrainingcenter.business.repositories.TrainingRepo;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,97 +15,96 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import ch.opentrainingcenter.business.domain.Athlete;
-import ch.opentrainingcenter.business.domain.CommonTransferFactory;
-import ch.opentrainingcenter.business.domain.HeartRate;
-import ch.opentrainingcenter.business.domain.RunData;
-import ch.opentrainingcenter.business.domain.Training;
-import ch.opentrainingcenter.business.repositories.AppConfig;
-import ch.opentrainingcenter.business.repositories.AthleteRepo;
-import ch.opentrainingcenter.business.repositories.TrainingRepo;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("test")
 @PropertySource("classpath:application-test.properties")
-@SpringBootTest(classes = { AppConfig.class })
+@SpringBootTest(classes = {AppConfig.class})
 public class TrainingServiceTestIT {
 
-	private static final int DISTANZ = 1234;
+    private static final int DISTANZ = 1234;
 
-	@Autowired
-	private TrainingService service;
+    @Autowired
+    private TrainingService service;
 
-	private static final String EMAIL = "email@test.ch";
+    private static final String EMAIL = "email@test.ch";
 
-	@Autowired
-	private TrainingRepo repo;
+    @Autowired
+    private TrainingRepo repo;
 
-	@Autowired
-	private AthleteRepo athleteRepo;
+    @Autowired
+    private AthleteRepo athleteRepo;
 
-	private Athlete athlete;
+    private Athlete athlete;
 
-	private Date now;
+    private Date now;
 
-	private Training training;
+    private Training training;
 
-	@Before
-	public void setUp() {
-		now = new Date();
-		athlete = new Athlete("firstName", "lastName", EMAIL, "password");
-		athlete.setMaxHeartRate(195);
-		athlete.setLocaleString("DE");
-		Athlete athleteFromDb = athleteRepo.findByEmail(EMAIL);
+    @Before
+    public void setUp() {
+        now = new Date();
+        athlete = new Athlete("firstName", "lastName", EMAIL, "password");
+        athlete.setMaxHeartRate(195);
+        athlete.setLocaleString("DE");
+        Athlete athleteFromDb = athleteRepo.findByEmail(EMAIL);
 
-		athleteFromDb = athleteRepo.save(athlete);
+        athleteFromDb = athleteRepo.save(athlete);
 
-		final RunData runData = new RunData(now, 102, DISTANZ, 4.5);
-		final HeartRate heart = new HeartRate(120, 180);
-		training = CommonTransferFactory.createTraining(runData, heart);
-		training.setAthlete(athleteFromDb);
-		training.setTrainingEffect(5);
-		training.setDateOfImport(now);
-	}
+        final RunData runData = new RunData(now, 102, DISTANZ, 4.5);
+        final HeartRate heart = new HeartRate(120, 180);
+        training = CommonTransferFactory.createTraining(runData, heart);
+        training.setAthlete(athleteFromDb);
+        training.setTrainingEffect(5);
+        training.setDateOfImport(now);
+    }
 
-	@After
-	public void cleanUp() {
-		repo.delete(training);
-		athleteRepo.delete(athlete);
-	}
+    @After
+    public void cleanUp() {
+        repo.delete(training);
+        athleteRepo.delete(athlete);
+    }
 
-	@Test
-	@WithMockUser(username = "dummy", roles = { "ADMIN" })
-	public void testFindByEmailAndDate_OneTraining() {
-		final LocalDateTime ldNow = LocalDateTime.of(2018, 1, 22, 0, 0, 0);
-		training.setId(ldNow.toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli());
-		repo.save(training);
+    @Test
+    @WithMockUser(username = "dummy", roles = {"ADMIN"})
+    public void testFindByEmailAndDate_OneTraining() {
+        final LocalDateTime ldNow = LocalDateTime.of(2018, 1, 22, 0, 0, 0);
+        training.setId(ldNow.toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli());
+        repo.save(training);
 
-		final Map<Integer, Double> result = service.findByEmailAndDate(EMAIL, ChronoUnit.MONTHS, 12,
-				ldNow.toLocalDate());
+        final Map<Integer, Double> result = service.findByEmailAndDate(EMAIL, ChronoUnit.MONTHS, 12,
+                ldNow.toLocalDate());
 
-		assertEquals(Double.valueOf(DISTANZ).doubleValue() / 1000, result.get(201801), 0.01);
-	}
+        assertEquals(Double.valueOf(DISTANZ).doubleValue() / 1000, result.get(201801), 0.01);
+    }
 
-	@Test
-	@WithMockUser(username = "dummy", roles = { "ADMIN" })
-	public void testFindByEmailAndDate_TwoTraining() {
-		final LocalDateTime ldNow = LocalDateTime.of(2018, 1, 22, 0, 0, 0);
-		training.setId(ldNow.toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli());
-		repo.save(training);
+    @Test
+    @WithMockUser(username = "dummy", roles = {"ADMIN"})
+    public void testFindByEmailAndDate_TwoTraining() {
+        final LocalDateTime ldNow = LocalDateTime.of(2018, 1, 22, 0, 0, 0);
+        training.setId(ldNow.toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli());
+        repo.save(training);
 
-		training.setId(ldNow.minusDays(2).toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli());
-		repo.save(training);
+        training.setId(ldNow.minusDays(2).toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli());
+        repo.save(training);
 
-		final Map<Integer, Double> result = service.findByEmailAndDate(EMAIL, ChronoUnit.MONTHS, 12,
-				ldNow.toLocalDate());
+        final Map<Integer, Double> result = service.findByEmailAndDate(EMAIL, ChronoUnit.MONTHS, 12,
+                ldNow.toLocalDate());
 
-		// assertEquals(DISTANZ, result.get(201801), 0.00001);
-		assertEquals(Double.valueOf(2 * DISTANZ).doubleValue() / 1000, result.get(201801), 0.01);
-	}
+        // assertEquals(DISTANZ, result.get(201801), 0.00001);
+        assertEquals(Double.valueOf(2 * DISTANZ).doubleValue() / 1000, result.get(201801), 0.01);
+    }
 
-	@Test
-	@WithMockUser(username = "dummy", roles = { "ADMIN" })
-	public void test() {
+    @Test
+    @WithMockUser(username = "dummy", roles = {"ADMIN"})
+    public void test() {
 
-	}
+    }
 }

@@ -5,26 +5,26 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 @SuppressWarnings("serial")
-public class OtcModalDialog extends Window {
+class OtcModalDialog extends Window {
 
-	private final VerticalLayout layout;
+    private final VerticalLayout layout;
 
-	public OtcModalDialog(final String caption) {
-		super(caption);
-		center();
-		setClosable(true);
-		setModal(true);
-		setHeight("350px");
-		setWidth("450px");
+    OtcModalDialog(final String caption) {
+        super(caption);
+        center();
+        setClosable(true);
+        setModal(true);
+        setHeight("350px");
+        setWidth("450px");
 
-		layout = new VerticalLayout();
-	}
+        layout = new VerticalLayout();
+    }
 
-	void addComponent(final Component c) {
-		layout.addComponent(c);
-	}
+    void addComponent(final Component c) {
+        layout.addComponent(c);
+    }
 
-	void setContent() {
-		setContent(layout);
-	}
+    void setContent() {
+        setContent(layout);
+    }
 }

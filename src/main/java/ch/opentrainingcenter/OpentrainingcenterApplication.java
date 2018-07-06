@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @EnableAutoConfiguration
 public class OpentrainingcenterApplication {
 
-	public static void main(final String[] args) {
-		SpringApplication.run(OpentrainingcenterApplication.class, args);
-	}
+    public static void main(final String[] args) {
+        SpringApplication.run(OpentrainingcenterApplication.class, args);
+    }
 }
