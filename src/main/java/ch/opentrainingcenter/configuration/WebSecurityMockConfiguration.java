@@ -26,7 +26,7 @@ import org.vaadin.spring.security.shared.VaadinSessionClosingLogoutHandler;
 import org.vaadin.spring.security.shared.VaadinUrlAuthenticationSuccessHandler;
 import org.vaadin.spring.security.web.VaadinRedirectStrategy;
 
-@Profile("dev")
+@Profile("!prod")
 @Configuration
 @EnableVaadin
 @EnableWebSecurity
