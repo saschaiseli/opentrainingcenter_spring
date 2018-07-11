@@ -92,7 +92,7 @@
 			<artifactId>fit-sdk</artifactId>
 			<version>${version.garmin}</version>
 			<scope>system</scope>
-			<systemPath>${basedir}/src/main/resources/lib/fit_16.60.0.jar</systemPath>
+			<systemPath>${project.basedir}/src/main/resources/lib/fit_16.60.0.jar</systemPath>
 		</dependency>
 
 
@@ -120,6 +120,11 @@
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
+		<!-- H2 Database -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -128,12 +133,6 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.mockito/mockito-all -->

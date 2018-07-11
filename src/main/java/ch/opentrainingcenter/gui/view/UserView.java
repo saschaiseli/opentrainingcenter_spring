@@ -24,6 +24,7 @@ public class UserView extends VerticalLayout implements View {
 
     @Override
     public void enter(final ViewChangeListener.ViewChangeEvent event) {
-
+     // not implemented
+        System.out.println("");
     }
 }
