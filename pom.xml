@@ -93,7 +93,7 @@
 			<artifactId>fit-sdk</artifactId>
 			<version>${version.garmin}</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/src/main/resources/lib/fit_16.60.0.jar</systemPath>
+			<systemPath>${basedir}/lib/fit_16.60.0.jar</systemPath>
 		</dependency>
 
 
@@ -173,10 +173,25 @@
 					<repoToken>j7IGcwFcqWMofC8SKHMuDug1mNVAaE8iM</repoToken>
 				</configuration>
 			</plugin>
-
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.7.6.201602180812</version>
+				<executions>
+					<execution>
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<includeSystemScope>true</includeSystemScope>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.flywaydb</groupId>
