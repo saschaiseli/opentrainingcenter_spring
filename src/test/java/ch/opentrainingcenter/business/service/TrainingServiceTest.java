@@ -1,109 +1,110 @@
 package ch.opentrainingcenter.business.service;
 
-import static org.junit.Assert.assertEquals;
-
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.Map;
-
-import org.junit.After;
+import ch.opentrainingcenter.business.domain.Rule;
+import ch.opentrainingcenter.business.domain.Section;
+import ch.opentrainingcenter.business.mapper.togobject.RuleToGObject;
+import ch.opentrainingcenter.business.repositories.AthleteRepo;
+import ch.opentrainingcenter.business.repositories.RuleRepo;
+import ch.opentrainingcenter.gui.model.GRule;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import ch.opentrainingcenter.business.domain.Athlete;
-import ch.opentrainingcenter.business.domain.CommonTransferFactory;
-import ch.opentrainingcenter.business.domain.HeartRate;
-import ch.opentrainingcenter.business.domain.RunData;
-import ch.opentrainingcenter.business.domain.Training;
-import ch.opentrainingcenter.business.repositories.AppConfig;
-import ch.opentrainingcenter.business.repositories.AthleteRepository;
-import ch.opentrainingcenter.business.repositories.TrainingRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ActiveProfiles("test")
-@PropertySource("classpath:application-test.properties")
-@SpringBootTest(classes = { AppConfig.class })
+// @ActiveProfiles("test")
+// @PropertySource("classpath:application-test.properties")
+// @SpringBootTest(classes = { AppConfig.class })
 public class TrainingServiceTest {
 
-	private static final int DISTANZ = 1234;
+    // private static final int DISTANZ = 1234;
+    //
+    private TrainingService service;
 
-	@Autowired
-	private TrainingService service;
+    //
+    private static final String EMAIL = "email@test.ch";
 
-	private static final String EMAIL = "email@test.ch";
+    private RuleRepo ruleRepo;
 
-	@Autowired
-	private TrainingRepository repo;
+    private List<Rule> rules;
 
-	@Autowired
-	private AthleteRepository athleteRepo;
+    @Before
+    public void setUp() {
+        service = new TrainingService();
+        ruleRepo = mock(RuleRepo.class);
+        service.setRuleRepo(ruleRepo);
+        service.setAthleteRepo(mock(AthleteRepo.class));
+        rules = new ArrayList<>();
+    }
 
-	private Athlete athlete;
+    @Test
+    @WithMockUser(username = "dummy", roles = {"ADMIN"})
+    public void testOneMatchingRule() {
+        final Section section = Section.PER_MONTH;
+        final int distance = 142;
+        rules.add(createRules(section, distance));
 
-	private Date now;
+        when(ruleRepo.findByAthlete(any())).thenReturn(rules);
+        service.setRuleToGObject(new RuleToGObject());
 
-	private Training training;
+        // when
+        final Optional<GRule> result = service.findGoal(EMAIL, section.getChronoUnit());
 
-	@Before
-	public void setUp() {
-		now = new Date();
-		athlete = new Athlete("firstName", "lastName", EMAIL, "password");
-		athlete.setMaxHeartRate(195);
-		athlete.setLocaleString("DE");
-		Athlete athleteFromDb = athleteRepo.findByEmail(EMAIL);
+        // then
+        assertEquals(142L, result.get().getValue());
+    }
 
-		athleteFromDb = athleteRepo.save(athlete);
+    @Test
+    @WithMockUser(username = "dummy", roles = {"ADMIN"})
+    public void testTwoMatchingRules() {
+        final Section section = Section.PER_MONTH;
+        final int distance = 142;
+        rules.add(createRules(section, distance));
+        rules.add(createRules(section, 200));
 
-		final RunData runData = new RunData(now, 102, DISTANZ, 4.5);
-		final HeartRate heart = new HeartRate(120, 180);
-		training = CommonTransferFactory.createTraining(runData, heart);
-		training.setAthlete(athleteFromDb);
-		training.setTrainingEffect(5);
-		training.setDateOfImport(now);
-	}
+        when(ruleRepo.findByAthlete(any())).thenReturn(rules);
+        service.setRuleToGObject(new RuleToGObject());
 
-	@After
-	public void cleanUp() {
-		repo.delete(training);
-		athleteRepo.delete(athlete);
-	}
+        // when
+        final Optional<GRule> result = service.findGoal(EMAIL, section.getChronoUnit());
 
-	@Test
-	@WithMockUser(username = "dummy", roles = { "ADMIN" })
-	public void testFindByEmailAndDate_OneTraining() {
-		final LocalDateTime ldNow = LocalDateTime.of(2018, 1, 22, 0, 0, 0);
-		training.setId(ldNow.toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli());
-		repo.save(training);
+        // then
+        assertEquals(142L, result.get().getValue());
+    }
 
-		final Map<Integer, Double> result = service.findByEmailAndDate(EMAIL, ChronoUnit.MONTHS, 12,
-				ldNow.toLocalDate());
+    @Test
+    @WithMockUser(username = "dummy", roles = {"ADMIN"})
+    public void testNoMatchingRule() {
+        final Section section = Section.PER_MONTH;
+        final int distance = 142;
+        rules.add(createRules(section, distance));
+        rules.add(createRules(section, 200));
 
-		assertEquals(Double.valueOf(DISTANZ).doubleValue() / 1000, result.get(201801), 0.01);
-	}
+        when(ruleRepo.findByAthlete(any())).thenReturn(rules);
+        service.setRuleToGObject(new RuleToGObject());
 
-	@Test
-	@WithMockUser(username = "dummy", roles = { "ADMIN" })
-	public void testFindByEmailAndDate_TwoTraining() {
-		final LocalDateTime ldNow = LocalDateTime.of(2018, 1, 22, 0, 0, 0);
-		training.setId(ldNow.toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli());
-		repo.save(training);
+        // when
+        final Optional<GRule> result = service.findGoal(EMAIL, Section.PER_WEEK.getChronoUnit());
 
-		training.setId(ldNow.minusDays(2).toInstant(ZoneOffset.ofTotalSeconds(0)).toEpochMilli());
-		repo.save(training);
+        // then
+        assertFalse(result.isPresent());
+    }
 
-		final Map<Integer, Double> result = service.findByEmailAndDate(EMAIL, ChronoUnit.MONTHS, 12,
-				ldNow.toLocalDate());
-
-		// assertEquals(DISTANZ, result.get(201801), 0.00001);
-		assertEquals(Double.valueOf(2 * DISTANZ).doubleValue() / 1000, result.get(201801), 0.01);
-	}
+    private Rule createRules(final Section section, final int distance) {
+        final Rule rule = new Rule();
+        rule.setSection(section);
+        rule.setValue(distance);
+        return rule;
+    }
 }

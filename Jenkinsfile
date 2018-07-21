@@ -13,6 +13,13 @@ pipeline {
         junit 'target/surefire-reports/*.xml'
       }
     }
+    stage('Integration Tests') {
+      steps {
+        sh 'mvn integration-test -Drun.profiles=test'
+        archive "target/**/*"
+        junit 'target/surefire-reports/*.xml'
+      }
+    }
     stage('Package') {
       steps {
         sh 'mvn package'

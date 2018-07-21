@@ -13,13 +13,9 @@ public class RunData {
     private final double maxSpeed;
 
     /**
-     * @param dateOfStart
-     *            Zeitpunkt des Startes in ms
-     * @param timeInSeconds
-     *            Dauer des Laufes in Sekunden
-     * @param distanceInMeter
-     *            Distanz in meter
-     * @param maxSpeed
+     * @param date            Zeitpunkt des Startes in ms
+     * @param timeInSeconds   Dauer des Laufes in Sekunden
+     * @param distanceInMeter Distanz in meter
      */
     public RunData(final Date date, final long timeInSeconds, final long distanceInMeter, final double maxSpeed) {
         this.date = date;
@@ -31,28 +27,28 @@ public class RunData {
     /**
      * @return Zeitpunkt des Startes in ms
      */
-    public Date getDateOfStart() {
+    Date getDateOfStart() {
         return date;
     }
 
     /**
      * @return Dauer des Laufes in Sekunden
      */
-    public long getTimeInSeconds() {
+    long getTimeInSeconds() {
         return timeInSeconds;
     }
 
     /**
      * @return Distanz in meter
      */
-    public long getDistanceInMeter() {
+    long getDistanceInMeter() {
         return distanceInMeter;
     }
 
     /**
      * @return maximale geschwindigkeit
      */
-    public double getMaxSpeed() {
+    double getMaxSpeed() {
         return maxSpeed;
     }
 }

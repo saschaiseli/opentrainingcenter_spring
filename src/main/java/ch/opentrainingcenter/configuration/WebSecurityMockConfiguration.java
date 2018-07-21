@@ -1,5 +1,9 @@
 package ch.opentrainingcenter.configuration;
 
+import ch.opentrainingcenter.business.security.AuthenticationProviderMock;
+import com.vaadin.spring.annotation.EnableVaadin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -22,11 +26,7 @@ import org.vaadin.spring.security.shared.VaadinSessionClosingLogoutHandler;
 import org.vaadin.spring.security.shared.VaadinUrlAuthenticationSuccessHandler;
 import org.vaadin.spring.security.web.VaadinRedirectStrategy;
 
-import com.vaadin.spring.annotation.EnableVaadin;
-
-import ch.opentrainingcenter.business.security.AuthenticationProviderMock;
-
-@Profile("dev")
+@Profile("!prod")
 @Configuration
 @EnableVaadin
 @EnableWebSecurity
@@ -35,41 +35,48 @@ import ch.opentrainingcenter.business.security.AuthenticationProviderMock;
 @EnableJpaAuditing
 @ComponentScan
 public class WebSecurityMockConfiguration extends WebSecurityConfigurerAdapter {
-	@Autowired
-	private AuthenticationProviderMock mock;
 
-	@Override
-	protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
-		auth.authenticationProvider(mock);
-	}
+    private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityMockConfiguration.class);
 
-	@Override
-	protected void configure(final HttpSecurity http) throws Exception {
-		http.authorizeRequests().antMatchers("/THEME", "/VAADIN/**", "/PUSH/**", "/UIDL/**", "/statistic", "/login",
-				"/error/**", "/accessDenied/**", "/vaadinServlet/**").permitAll();
+    @Autowired
+    private AuthenticationProviderMock mock;
 
-		http.httpBasic().disable();
-		http.formLogin().disable();
+    @Override
+    protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(mock);
+    }
 
-		http.logout().addLogoutHandler(new VaadinSessionClosingLogoutHandler()).logoutUrl("/logout")
-				.logoutSuccessUrl("/login?logout").permitAll();
+    @Override
+    protected void configure(final HttpSecurity http) throws Exception {
+        LOGGER.info("******************************************************************************************");
+        LOGGER.info("******************** DEV MODE *****************************************************");
+        LOGGER.info("******************************************************************************************");
 
-		http.exceptionHandling().authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"));
+        http.authorizeRequests().antMatchers("/THEME", "/VAADIN/**", "/PUSH/**", "/UIDL/**", "/statistic", "/login",
+                "/error/**", "/accessDenied/**", "/vaadinServlet/**").permitAll();
 
-		http.csrf().disable();
-		http.authenticationProvider(mock);
+        http.httpBasic().disable();
+        http.formLogin().disable();
 
-		http.sessionManagement().sessionAuthenticationStrategy(sessionAuthenticationStrategy());
-	}
+        http.logout().addLogoutHandler(new VaadinSessionClosingLogoutHandler()).logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout").permitAll();
 
-	@Bean
-	public SessionAuthenticationStrategy sessionAuthenticationStrategy() {
-		return new SessionFixationProtectionStrategy();
-	}
+        http.exceptionHandling().authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"));
 
-	@Bean(name = VaadinSharedSecurityConfiguration.VAADIN_AUTHENTICATION_SUCCESS_HANDLER_BEAN)
-	public VaadinAuthenticationSuccessHandler vaadinAuthenticationSuccessHandler(final HttpService httpService,
-			final VaadinRedirectStrategy vaadinRedirectStrategy) {
-		return new VaadinUrlAuthenticationSuccessHandler(httpService, vaadinRedirectStrategy, "/");
-	}
+        http.csrf().disable();
+        http.authenticationProvider(mock);
+
+        http.sessionManagement().sessionAuthenticationStrategy(sessionAuthenticationStrategy());
+    }
+
+    @Bean
+    public SessionAuthenticationStrategy sessionAuthenticationStrategy() {
+        return new SessionFixationProtectionStrategy();
+    }
+
+    @Bean(name = VaadinSharedSecurityConfiguration.VAADIN_AUTHENTICATION_SUCCESS_HANDLER_BEAN)
+    public VaadinAuthenticationSuccessHandler vaadinAuthenticationSuccessHandler(final HttpService httpService,
+                                                                                 final VaadinRedirectStrategy vaadinRedirectStrategy) {
+        return new VaadinUrlAuthenticationSuccessHandler(httpService, vaadinRedirectStrategy, "/");
+    }
 }

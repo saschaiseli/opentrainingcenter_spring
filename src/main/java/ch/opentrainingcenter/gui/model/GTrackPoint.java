@@ -4,53 +4,53 @@ import java.time.format.DateTimeFormatter;
 
 public class GTrackPoint implements GObject {
 
-	final DateTimeFormatter tf = DateTimeFormatter.ofPattern("HH:mm:ss");
+    final DateTimeFormatter tf = DateTimeFormatter.ofPattern("HH:mm:ss");
 
-	private final double distance;
-	private final int heartbeat;
-	private final int altitude;
-	private final long zeit;
-	private final int lap;
-	private final Double longitude;
-	private final Double latitude;
+    private final double distance;
+    private final int heartbeat;
+    private final int altitude;
+    private final long zeit;
+    private final int lap;
+    private final Double longitude;
+    private final Double latitude;
 
-	public GTrackPoint(final double distance, final int heartbeat, final int altitude, final long zeit, final int lap,
-			final Double longitude, final Double latitude) {
-		this.distance = distance;
-		this.heartbeat = heartbeat;
-		this.altitude = altitude;
-		this.zeit = zeit;
-		this.lap = lap;
-		this.longitude = longitude;
-		this.latitude = latitude;
-	}
+    public GTrackPoint(final double distance, final int heartbeat, final int altitude, final long zeit, final int lap,
+                       final Double longitude, final Double latitude) {
+        this.distance = distance;
+        this.heartbeat = heartbeat;
+        this.altitude = altitude;
+        this.zeit = zeit;
+        this.lap = lap;
+        this.longitude = longitude;
+        this.latitude = latitude;
+    }
 
-	public final double getDistance() {
-		return distance;
-	}
+    public final double getDistance() {
+        return distance;
+    }
 
-	public final int getHeartbeat() {
-		return heartbeat;
-	}
+    public final int getHeartbeat() {
+        return heartbeat;
+    }
 
-	public final int getAltitude() {
-		return altitude;
-	}
+    public final int getAltitude() {
+        return altitude;
+    }
 
-	public final long getZeit() {
-		return zeit;
-	}
+    public final long getZeit() {
+        return zeit;
+    }
 
-	public final int getLap() {
-		return lap;
-	}
+    public final int getLap() {
+        return lap;
+    }
 
-	public final Double getLongitude() {
-		return longitude;
-	}
+    public final Double getLongitude() {
+        return longitude;
+    }
 
-	public final Double getLatitude() {
-		return latitude;
-	}
+    public final Double getLatitude() {
+        return latitude;
+    }
 
 }

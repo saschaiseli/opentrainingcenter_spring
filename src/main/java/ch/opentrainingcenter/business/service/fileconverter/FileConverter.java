@@ -1,15 +1,14 @@
 package ch.opentrainingcenter.business.service.fileconverter;
 
-import java.nio.file.Path;
-
+import ch.opentrainingcenter.business.domain.Training;
 import org.springframework.stereotype.Service;
 
-import ch.opentrainingcenter.business.domain.Training;
+import java.nio.file.Path;
 
 @Service
 public interface FileConverter {
 
-	Training convert(final Path file) throws FileConvertException;
+    Training convert(final Path file) throws FileConvertException;
 
-	String getFileSuffix();
+    String getFileSuffix();
 }

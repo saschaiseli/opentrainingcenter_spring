@@ -1,5 +1,9 @@
 package ch.opentrainingcenter.configuration;
 
+import ch.opentrainingcenter.business.service.AthleteDetailService;
+import com.vaadin.spring.annotation.EnableVaadin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -26,11 +30,7 @@ import org.vaadin.spring.security.shared.VaadinSessionClosingLogoutHandler;
 import org.vaadin.spring.security.shared.VaadinUrlAuthenticationSuccessHandler;
 import org.vaadin.spring.security.web.VaadinRedirectStrategy;
 
-import com.vaadin.spring.annotation.EnableVaadin;
-
-import ch.opentrainingcenter.business.service.AthleteDetailService;
-
-@Profile("!dev")
+@Profile("prod")
 @Configuration
 @EnableVaadin
 @EnableWebSecurity
@@ -39,59 +39,62 @@ import ch.opentrainingcenter.business.service.AthleteDetailService;
 @EnableJpaAuditing
 @ComponentScan
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(WebSecurityConfiguration.class);
+    @Autowired
+    private AthleteDetailService athleteDetailService;
 
-	@Autowired
-	private AthleteDetailService athleteDetailService;
+    @Autowired
+    public void configureGlobal(final AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(athleteDetailService);
+    }
 
-	@Autowired
-	public void configureGlobal(final AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(athleteDetailService);
-	}
+    @Override
+    protected void configure(final HttpSecurity http) throws Exception {
+        LOGGER.info("******************************************************************************************");
+        LOGGER.info("******************** PRODUCTION MODE *****************************************************");
+        LOGGER.info("******************************************************************************************");
+        http.authorizeRequests().antMatchers("/THEME", "/VAADIN/**", "/PUSH/**", "/UIDL/**", "/statistic", "/login",
+                "/error/**", "/accessDenied/**", "/vaadinServlet/**").permitAll();
 
-	@Override
-	protected void configure(final HttpSecurity http) throws Exception {
-		http.authorizeRequests().antMatchers("/THEME", "/VAADIN/**", "/PUSH/**", "/UIDL/**", "/statistic", "/login",
-				"/error/**", "/accessDenied/**", "/vaadinServlet/**").permitAll();
+        http.httpBasic().disable();
+        http.formLogin().disable();
 
-		http.httpBasic().disable();
-		http.formLogin().disable();
+        http.logout().addLogoutHandler(new VaadinSessionClosingLogoutHandler()).logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout").permitAll();
 
-		http.logout().addLogoutHandler(new VaadinSessionClosingLogoutHandler()).logoutUrl("/logout")
-				.logoutSuccessUrl("/login?logout").permitAll();
+        http.exceptionHandling().authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"));
 
-		http.exceptionHandling().authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"));
+        http.csrf().disable();
 
-		http.csrf().disable();
+        http.rememberMe().rememberMeServices(rememberMeServices()).key("myAppKey");
 
-		http.rememberMe().rememberMeServices(rememberMeServices()).key("myAppKey");
+        http.sessionManagement().sessionAuthenticationStrategy(sessionAuthenticationStrategy());
+    }
 
-		http.sessionManagement().sessionAuthenticationStrategy(sessionAuthenticationStrategy());
-	}
+    @Override
+    public void configure(final WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/VAADIN/**");
+    }
 
-	@Override
-	public void configure(final WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/VAADIN/**");
-	}
+    @Override
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 
-	@Override
-	@Bean
-	public AuthenticationManager authenticationManagerBean() throws Exception {
-		return super.authenticationManagerBean();
-	}
+    @Bean
+    public RememberMeServices rememberMeServices() {
+        return new TokenBasedRememberMeServices("myAppKey", athleteDetailService);
+    }
 
-	@Bean
-	public RememberMeServices rememberMeServices() {
-		return new TokenBasedRememberMeServices("myAppKey", athleteDetailService);
-	}
+    @Bean
+    public SessionAuthenticationStrategy sessionAuthenticationStrategy() {
+        return new SessionFixationProtectionStrategy();
+    }
 
-	@Bean
-	public SessionAuthenticationStrategy sessionAuthenticationStrategy() {
-		return new SessionFixationProtectionStrategy();
-	}
-
-	@Bean(name = VaadinSharedSecurityConfiguration.VAADIN_AUTHENTICATION_SUCCESS_HANDLER_BEAN)
-	public VaadinAuthenticationSuccessHandler vaadinAuthenticationSuccessHandler(final HttpService httpService,
-			final VaadinRedirectStrategy vaadinRedirectStrategy) {
-		return new VaadinUrlAuthenticationSuccessHandler(httpService, vaadinRedirectStrategy, "/");
-	}
+    @Bean(name = VaadinSharedSecurityConfiguration.VAADIN_AUTHENTICATION_SUCCESS_HANDLER_BEAN)
+    public VaadinAuthenticationSuccessHandler vaadinAuthenticationSuccessHandler(final HttpService httpService,
+                                                                                 final VaadinRedirectStrategy vaadinRedirectStrategy) {
+        return new VaadinUrlAuthenticationSuccessHandler(httpService, vaadinRedirectStrategy, "/");
+    }
 }

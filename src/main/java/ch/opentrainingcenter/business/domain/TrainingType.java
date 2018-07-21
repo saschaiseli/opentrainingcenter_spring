@@ -42,20 +42,20 @@ public enum TrainingType {
 
     public static TrainingType getByIndex(final int index) {
         switch (index) {
-        case 0:
-            return NONE;
-        case 1:
-            return EXT_INTERVALL;
-        case 2:
-            return INT_INTERVALL;
-        case 3:
-            return LONG_JOG;
-        case 4:
-            return POWER_LONG_JOG;
-        case 5:
-            return TEMPO_JOG;
-        default:
-            throw new IllegalArgumentException(String.format("TrainingTyp mit dem Index %s existiert nicht", index)); //$NON-NLS-1$
+            case 0:
+                return NONE;
+            case 1:
+                return EXT_INTERVALL;
+            case 2:
+                return INT_INTERVALL;
+            case 3:
+                return LONG_JOG;
+            case 4:
+                return POWER_LONG_JOG;
+            case 5:
+                return TEMPO_JOG;
+            default:
+                throw new IllegalArgumentException(String.format("TrainingTyp mit dem Index %s existiert nicht", index)); //$NON-NLS-1$
         }
     }
 
